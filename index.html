@@ -1,115 +1,517 @@
-<!DOCTYPE html> <!-- declares HTML5; without it browsers use old "quirks mode" -->
-<html lang="en"> <!-- root element; lang helps screen readers and search engines -->
-<head> <!-- invisible page information -->
-  <meta charset="UTF-8"> <!-- correct character display; removing may garble symbols like the naira sign -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- makes the layout fit phone screens; removing breaks mobile -->
-  <meta name="description" content="Dice: considered streetwear and accessories, made in Lagos."> <!-- shown in search results -->
-  <title>Dice | Streetwear &amp; Accessories</title> <!-- browser tab title -->
-  <link rel="preconnect" href="https://fonts.googleapis.com"> <!-- speeds up loading Google Fonts -->
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <!-- same, for the font files -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet"> <!-- loads the two fonts; if offline the CSS fallback fonts are used -->
-  <link rel="stylesheet" href="css/style.css"> <!-- external stylesheet; removing it leaves the page unstyled -->
-</head>
-<body> <!-- all visible content -->
+<!DOCTYPE html>
+<!-- Tells the browser this is an HTML5 document. Removing it can push browsers into "quirks mode" (old, inconsistent rendering). -->
+<html lang="en" class="no-js">
+<!-- lang="en" helps screen readers pronounce text correctly and helps search engines. -->
 
-  <header class="site-header" id="siteHeader"> <!-- semantic header; JS adds a class on scroll -->
-    <nav class="nav container" aria-label="Main"> <!-- semantic navigation block -->
-      <a href="#home" class="logo">DICE</a> <!-- brand wordmark linking to the top -->
-      <ul class="nav-links" id="navLinks"> <!-- list of section links -->
-        <li><a href="#home">Home</a></li> <!-- goes to the hero -->
-        <li><a href="#about">About</a></li> <!-- goes to about -->
-        <li><a href="#products">Products</a></li> <!-- goes to products -->
-        <li><a href="#contact">Contact</a></li> <!-- goes to contact -->
+<head>
+  <!-- The <head> holds information ABOUT the page (not visible content). -->
+  <meta charset="UTF-8" />
+  <!-- UTF-8 lets us display any character (₦, €, emojis). Removing it may show broken symbols. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Makes the page scale correctly on phones. Without it, mobile shows a tiny zoomed-out desktop page and media queries won't behave. -->
+  <meta name="description" content="Dice – premium streetwear, fashion and accessories. Bold black and pink designs crafted for people who play to win." />
+  <!-- The description shown in Google search results. -->
+  <title>Dice | Premium Fashion &amp; Clothing Accessories</title>
+  <!-- Text shown in the browser tab. -->
+
+  <!-- Google Fonts: preconnect speeds up loading the font files. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- Loads two fonts: "Syne" (display headings) and "Plus Jakarta Sans" (body text). Removing this falls back to system fonts. -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- EXTERNAL CSS STYLESHEET: all the styling lives in css/style.css. Remove this and the page becomes plain unstyled HTML. -->
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+
+<body>
+  <!-- Scroll progress bar (width is updated by JavaScript as you scroll). -->
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+  <!-- Soft pink "ambient" glow that follows the mouse (moved by JavaScript). -->
+  <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+
+  <!-- ===================== HEADER / NAVIGATION ===================== -->
+  <!-- <header> is a semantic element for the top area of the page. -->
+  <header class="header" id="header">
+    <!-- <nav> tells browsers & screen readers this block is the main navigation. -->
+    <nav class="nav container" aria-label="Main navigation">
+      <!-- Logo: a link back to the top (Home). -->
+      <a href="#home" class="logo" aria-label="Dice home">
+        <!-- Small inline SVG dice icon. -->
+        <span class="logo__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+            <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="currentColor" stroke-width="2" />
+            <circle cx="8" cy="8" r="1.6" fill="currentColor" />
+            <circle cx="12" cy="12" r="1.6" fill="currentColor" />
+            <circle cx="16" cy="16" r="1.6" fill="currentColor" />
+          </svg>
+        </span>
+        <span class="logo__text">DICE</span>
+      </a>
+
+      <!-- Unordered list of navigation links (lists are the semantic way to group links). -->
+      <ul class="nav__links" id="navLinks">
+        <li><a href="#home" class="nav__link active">Home</a></li>
+        <li><a href="#about" class="nav__link">About</a></li>
+        <li><a href="#products" class="nav__link">Products</a></li>
+        <li><a href="#services" class="nav__link">Services</a></li>
+        <li><a href="#contact" class="nav__link">Contact</a></li>
       </ul>
-      <div class="nav-right"> <!-- groups bag and menu button -->
-        <button class="bag-btn" id="bagBtn" type="button">Bag (<span id="bagCount">0</span>)</button> <!-- bag button; JS updates the number -->
-        <button class="menu-btn" id="menuBtn" type="button" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span></button> <!-- mobile menu button; two lines drawn with CSS -->
+
+      <!-- Right-hand action buttons. -->
+      <div class="nav__actions">
+        <!-- Shopping bag button: the number is updated by JavaScript when you add products. -->
+        <button class="bag-btn" id="bagBtn" type="button" aria-label="Shopping bag">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 7h12l-1 13H7L6 7Z" />
+            <path d="M9 7a3 3 0 0 1 6 0" />
+          </svg>
+          <span class="bag-btn__count" id="bagCount">0</span>
+        </button>
+        <!-- Hamburger menu button (only visible on mobile/tablet). aria-expanded is toggled by JS. -->
+        <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
       </div>
     </nav>
   </header>
 
-  <main> <!-- main page content -->
+  <!-- <main> wraps the unique content of the page. There should only be one per page. -->
+  <main>
 
-    <section class="hero" id="home"> <!-- HOME section -->
-      <img class="hero-img" src="https://images.unsplash.com/photo-1542529727-24cb357c57d2?auto=format&fit=crop&w=1800&q=80" alt="Model wearing a black cap and white tee against a grey wall" fetchpriority="high"> <!-- online hero photo (Unsplash) -->
-      <div class="hero-overlay"></div> <!-- dark gradient so text stays readable -->
-      <div class="container hero-content"> <!-- text over the photo -->
-        <p class="eyebrow reveal">Welcome to Dice</p> <!-- welcome message label -->
-        <h1 class="reveal" data-delay="1">Considered streetwear,<br><em>made in Lagos.</em></h1> <!-- business tagline -->
-        <p class="lead reveal" data-delay="2">Dice is a Lagos clothing label designing hoodies, tees and accessories in heavyweight fabrics and clean silhouettes. Built to be worn on repeat.</p> <!-- brief introduction -->
-        <div class="hero-actions reveal" data-delay="3"> <!-- buttons row -->
-          <a href="#products" class="btn btn-primary">Shop the collection</a> <!-- main call to action -->
-          <a href="#about" class="btn btn-outline">Our story</a> <!-- secondary action -->
-        </div>
-      </div>
-    </section>
+    <!-- ===================== A. HOME / HERO ===================== -->
+    <section class="hero" id="home" aria-labelledby="hero-title">
+      <!-- Decorative moving blobs in the background. -->
+      <div class="hero__blob hero__blob--one" aria-hidden="true"></div>
+      <div class="hero__blob hero__blob--two" aria-hidden="true"></div>
+      <div class="hero__grid-lines" aria-hidden="true"></div>
 
-    <section class="section container" id="about"> <!-- ABOUT section -->
-      <div class="about-grid"> <!-- CSS GRID: image and text columns -->
-        <img class="about-img reveal" src="https://images.unsplash.com/photo-1604257936257-639c57c5bb4a?auto=format&fit=crop&w=1000&q=80" alt="Model in a striped hooded top" loading="lazy"> <!-- online image, loads when near screen -->
-        <div class="about-text"> <!-- text column -->
-          <p class="eyebrow reveal">About Dice</p>
-          <h2 class="reveal" data-delay="1">Clothing with a point of view</h2>
-          <p class="reveal" data-delay="2"><strong>What we do.</strong> Dice designs and sells everyday clothing and accessories for people who care about fit, fabric and finish.</p> <!-- what the organisation does -->
-          <p class="reveal" data-delay="3"><strong>Our story.</strong> Dice began in 2021 as a small print project. It grew into a full label by focusing on one idea: fewer pieces, made better. (Sample history for this project.)</p> <!-- background/history -->
-        </div>
-      </div>
-      <div class="values"> <!-- CSS GRID: mission, vision, objectives -->
-        <article class="value reveal"><span class="num">01</span><h3>Mission</h3><p>To make well-built, expressive clothing that people keep for years.</p></article> <!-- mission -->
-        <article class="value reveal" data-delay="1"><span class="num">02</span><h3>Vision</h3><p>To become a leading African streetwear label known for quality and design.</p></article> <!-- vision -->
-        <article class="value reveal" data-delay="2"><span class="num">03</span><h3>Objectives</h3><ul><li>Premium fabrics</li><li>Honest pricing</li><li>Reliable delivery</li></ul></article> <!-- objectives list -->
-      </div>
-    </section>
+      <div class="container hero__grid">
+        <!-- Left column: text. -->
+        <div class="hero__content">
+          <p class="eyebrow reveal">
+            <span class="eyebrow__dot"></span> Welcome to Dice Clothing Co.
+          </p>
+          <!-- The business name in the main <h1> (only one h1 per page). -->
+          <h1 class="hero__title reveal" id="hero-title">
+            Wear your <span class="gradient-text">lucky</span> streak with <span class="hero__brand">Dice.</span>
+          </h1>
+          <p class="hero__text reveal">
+            Dice is a fashion and clothing accessories house built for people who play to win. We design bold,
+            premium streetwear, elegant everyday pieces and statement accessories, all made to last and made to be noticed.
+          </p>
 
-    <section class="section container" id="products"> <!-- PRODUCTS section -->
-      <div class="section-head reveal"><p class="eyebrow">The Collection</p><h2>Essentials, refined</h2></div> <!-- heading -->
-      <div class="product-list"> <!-- FLEXBOX column of alternating rows -->
-        <article class="product reveal"> <!-- product 1 -->
-          <div class="product-media"><img src="https://images.unsplash.com/photo-1622131527801-78b144aa7f2c?auto=format&fit=crop&w=1000&q=80" alt="Model in a beige hoodie leaning on a wall" loading="lazy"></div> <!-- wrapper hides zoom overflow -->
-          <div class="product-info"><span class="num">01</span><h3>Sand Oversized Hoodie</h3><p>Heavyweight brushed cotton, relaxed drop shoulder and a soft, structured hood.</p><div class="buy-row"><span class="price">₦38,000</span><button class="btn btn-primary add-btn" type="button" data-name="Sand Oversized Hoodie">Add to bag</button></div></div>
-        </article>
-        <article class="product reverse reveal"> <!-- product 2; "reverse" swaps sides -->
-          <div class="product-media"><img src="https://images.unsplash.com/photo-1543849877-4097ae9f2b73?auto=format&fit=crop&w=1000&q=80" alt="Model in a black and blue zip-up hoodie" loading="lazy"></div>
-          <div class="product-info"><span class="num">02</span><h3>Noir Zip Hoodie</h3><p>A full-zip layer with a clean front and a tailored fit. Easy over a tee, sharp over a shirt.</p><div class="buy-row"><span class="price">₦42,500</span><button class="btn btn-primary add-btn" type="button" data-name="Noir Zip Hoodie">Add to bag</button></div></div>
-        </article>
-        <article class="product reveal"> <!-- product 3 -->
-          <div class="product-media"><img class="crop-top" src="https://images.unsplash.com/photo-1542529727-24cb357c57d2?auto=format&fit=crop&w=1000&q=80" alt="Black structured cap" loading="lazy"></div>
-          <div class="product-info"><span class="num">03</span><h3>Black Dad Cap</h3><p>Six-panel cotton cap with an adjustable strap. The simplest way to finish an outfit.</p><div class="buy-row"><span class="price">₦12,000</span><button class="btn btn-primary add-btn" type="button" data-name="Black Dad Cap">Add to bag</button></div></div>
-        </article>
-      </div>
-    </section>
+          <!-- Call-to-action buttons. -->
+          <div class="hero__cta reveal">
+            <a href="#products" class="btn btn--primary magnetic">
+              Shop the collection
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+            </a>
+            <a href="#about" class="btn btn--ghost magnetic">Our story</a>
+          </div>
 
-    <section class="section container" id="contact"> <!-- CONTACT section -->
-      <div class="contact-wrap"> <!-- FLEXBOX: info and form -->
-        <div class="contact-info"> <!-- left column -->
-          <p class="eyebrow reveal">Contact</p><h2 class="reveal" data-delay="1">Talk to us</h2>
-          <ul class="reveal" data-delay="2"> <!-- sample details -->
-            <li><span>Email</span><a href="mailto:hello@dicestore.example">hello@dicestore.example</a></li> <!-- sample email -->
-            <li><span>Phone</span><a href="tel:+2340000000000">+234 000 000 0000</a></li> <!-- sample phone -->
-            <li><span>Studio</span>12 Sample Street, Lagos, Nigeria</li> <!-- sample address -->
-            <li><span>Hours</span>Mon - Sat, 9am - 6pm</li> <!-- hours -->
+          <!-- Stats list. data-target holds the final number that JavaScript counts up to. -->
+          <ul class="hero__stats reveal">
+            <li><strong class="counter" data-target="50">0</strong><span>K+ happy customers</span></li>
+            <li><strong class="counter" data-target="120">0</strong><span>+ original designs</span></li>
+            <li><strong class="counter" data-target="18">0</strong><span> cities shipped to</span></li>
           </ul>
         </div>
-        <form class="contact-form reveal" id="contactForm" novalidate> <!-- novalidate lets our JS show the errors -->
-          <div class="field"><label for="fullName">Full name</label><input type="text" id="fullName" name="fullName" autocomplete="name"><small class="error" id="fullNameError"></small></div> <!-- name -->
-          <div class="field"><label for="email">Email address</label><input type="email" id="email" name="email" autocomplete="email"><small class="error" id="emailError"></small></div> <!-- email -->
-          <div class="field"><label for="subject">Subject</label><input type="text" id="subject" name="subject"><small class="error" id="subjectError"></small></div> <!-- subject -->
-          <div class="field"><label for="message">Message</label><textarea id="message" name="message" rows="5"></textarea><small class="error" id="messageError"></small></div> <!-- message -->
-          <button type="submit" class="btn btn-primary">Send message</button> <!-- submit button -->
-          <p class="form-status" id="formStatus" role="status"></p> <!-- feedback area -->
+
+        <!-- Right column: image with floating glass cards. -->
+        <div class="hero__visual reveal">
+          <div class="hero__image-wrap">
+            <!-- alt text describes the image for screen readers and shows if the image fails. -->
+            <img src="images/hero.jpg" alt="Model wearing a black Dice streetwear jacket with pink accents" class="hero__image" width="640" height="800" />
+          </div>
+          <!-- Glassmorphism floating cards. -->
+          <div class="float-card float-card--top glass">
+            <span class="float-card__label">New drop</span>
+            <strong>Midnight Collection</strong>
+          </div>
+          <div class="float-card float-card--bottom glass">
+            <span class="float-card__stars" aria-label="Rated 4.9 out of 5">★★★★★</span>
+            <strong>4.9 / 5</strong>
+            <span class="float-card__label">from 12,000+ reviews</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Moving text strip (marquee) between sections. -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track">
+        <span>Streetwear</span><span>✦</span><span>Accessories</span><span>✦</span><span>Footwear</span><span>✦</span><span>Bold by design</span><span>✦</span><span>Free shipping over $150</span><span>✦</span>
+        <span>Streetwear</span><span>✦</span><span>Accessories</span><span>✦</span><span>Footwear</span><span>✦</span><span>Bold by design</span><span>✦</span><span>Free shipping over $150</span><span>✦</span>
+      </div>
+    </div>
+
+    <!-- ===================== B. ABOUT ===================== -->
+    <section class="section about" id="about" aria-labelledby="about-title">
+      <div class="container about__grid">
+        <!-- Image column. -->
+        <figure class="about__media reveal">
+          <img src="images/about.jpg" alt="Inside the Dice flagship store with black walls and pink neon lighting" width="640" height="720" loading="lazy" />
+          <figcaption class="about__badge glass">
+            <strong>Est. 2018</strong>
+            <span>Lagos · London · Online</span>
+          </figcaption>
+        </figure>
+
+        <!-- Text column. -->
+        <div class="about__content">
+          <p class="section-tag reveal">About Dice</p>
+          <h2 class="section-title reveal" id="about-title">Fashion that takes a <span class="gradient-text">chance</span> on you.</h2>
+          <p class="reveal">
+            Dice designs and sells premium clothing and fashion accessories: hoodies, dresses, footwear,
+            bags and more. Every piece is designed in-house, produced in small batches with ethical partners, and
+            finished with the signature details our customers love.
+          </p>
+          <p class="reveal">
+            Beyond products, we offer personal styling, custom tailoring and fast delivery, so every customer
+            leaves looking and feeling like their best self.
+          </p>
+
+          <!-- History timeline as an ordered list (order matters: it's chronological). -->
+          <h3 class="about__subtitle reveal">Our story so far</h3>
+          <ol class="timeline">
+            <li class="timeline__item reveal">
+              <span class="timeline__year">2018</span>
+              <p>Two friends roll the dice, launching Dice from a tiny studio with just 12 hoodie designs.</p>
+            </li>
+            <li class="timeline__item reveal">
+              <span class="timeline__year">2020</span>
+              <p>Our first flagship store opens, and the black and pink identity becomes our signature.</p>
+            </li>
+            <li class="timeline__item reveal">
+              <span class="timeline__year">2023</span>
+              <p>We go global online and expand into footwear and luxury accessories.</p>
+            </li>
+            <li class="timeline__item reveal">
+              <span class="timeline__year">2026</span>
+              <p>More than 50,000 customers in 18 cities, and we're still just getting started.</p>
+            </li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- Mission / Vision / Objectives cards (CSS Grid). -->
+      <div class="container values">
+        <article class="value-card glass reveal">
+          <div class="value-card__icon" aria-hidden="true">◎</div>
+          <h3>Our Mission</h3>
+          <p>To make premium, confident fashion accessible, with clothing that lets everyone express their boldest self.</p>
+        </article>
+        <article class="value-card glass reveal">
+          <div class="value-card__icon" aria-hidden="true">✦</div>
+          <h3>Our Vision</h3>
+          <p>To become Africa's most loved lifestyle fashion brand, recognised worldwide for design and quality.</p>
+        </article>
+        <article class="value-card glass reveal">
+          <div class="value-card__icon" aria-hidden="true">◇</div>
+          <h3>Our Objectives</h3>
+          <!-- A list inside the card. -->
+          <ul class="value-card__list">
+            <li>Launch 4 new collections every year</li>
+            <li>Use 70% sustainable fabrics by 2027</li>
+            <li>Deliver to 30 cities within 48 hours</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===================== C. PRODUCTS ===================== -->
+    <section class="section products" id="products" aria-labelledby="products-title">
+      <div class="container">
+        <!-- Section header. -->
+        <div class="section-head">
+          <p class="section-tag reveal">The Collection</p>
+          <h2 class="section-title reveal" id="products-title">Pieces made to be <span class="gradient-text">noticed.</span></h2>
+          <p class="section-sub reveal">Hand-picked bestsellers from our latest season. Filter by category and add your favourites to the bag.</p>
+        </div>
+
+        <!-- Filter buttons (JavaScript reads data-filter to show/hide products). -->
+        <div class="filters reveal" role="group" aria-label="Filter products">
+          <button class="filter-btn active" type="button" data-filter="all">All</button>
+          <button class="filter-btn" type="button" data-filter="apparel">Apparel</button>
+          <button class="filter-btn" type="button" data-filter="footwear">Footwear</button>
+          <button class="filter-btn" type="button" data-filter="accessories">Accessories</button>
+        </div>
+
+        <!-- PRODUCT GRID (CSS Grid). Each product is an <article> with a data-category. -->
+        <div class="product-grid" id="productGrid">
+          <article class="product-card reveal" data-category="apparel">
+            <div class="product-card__media">
+              <img src="images/hoodie.jpg" alt="Black oversized Dice hoodie with pink embroidered logo" loading="lazy" width="500" height="500" />
+              <span class="product-card__tag">Bestseller</span>
+            </div>
+            <div class="product-card__body">
+              <p class="product-card__cat">Apparel</p>
+              <h3 class="product-card__name">Midnight Oversized Hoodie</h3>
+              <p class="product-card__desc">Heavyweight 400gsm cotton fleece with a relaxed fit and our pink embroidered dice crest.</p>
+              <div class="product-card__foot">
+                <span class="product-card__price">$89</span>
+                <button class="add-btn" type="button" data-name="Midnight Oversized Hoodie">Add to bag</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card reveal" data-category="apparel">
+            <div class="product-card__media">
+              <img src="images/dress.jpg" alt="Pink satin slip dress" loading="lazy" width="500" height="500" />
+              <span class="product-card__tag">New</span>
+            </div>
+            <div class="product-card__body">
+              <p class="product-card__cat">Apparel</p>
+              <h3 class="product-card__name">Rosé Satin Slip Dress</h3>
+              <p class="product-card__desc">Fluid satin cut on the bias for an effortless drape, perfect from evening events to brunch.</p>
+              <div class="product-card__foot">
+                <span class="product-card__price">$129</span>
+                <button class="add-btn" type="button" data-name="Rosé Satin Slip Dress">Add to bag</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card reveal" data-category="footwear">
+            <div class="product-card__media">
+              <img src="images/sneakers.jpg" alt="Black leather sneakers with pink sole details" loading="lazy" width="500" height="500" />
+              <span class="product-card__tag">Limited</span>
+            </div>
+            <div class="product-card__body">
+              <p class="product-card__cat">Footwear</p>
+              <h3 class="product-card__name">High Roller Sneakers</h3>
+              <p class="product-card__desc">Premium full-grain leather with a cushioned sole and hot pink detailing that turns heads.</p>
+              <div class="product-card__foot">
+                <span class="product-card__price">$159</span>
+                <button class="add-btn" type="button" data-name="High Roller Sneakers">Add to bag</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card reveal" data-category="accessories">
+            <div class="product-card__media">
+              <img src="images/bag.jpg" alt="Black quilted leather handbag with pink gold chain" loading="lazy" width="500" height="500" />
+              <span class="product-card__tag">Exclusive</span>
+            </div>
+            <div class="product-card__body">
+              <p class="product-card__cat">Accessories</p>
+              <h3 class="product-card__name">Jackpot Quilted Bag</h3>
+              <p class="product-card__desc">Soft quilted leather, a rose-gold chain strap and a roomy interior for all your essentials.</p>
+              <div class="product-card__foot">
+                <span class="product-card__price">$199</span>
+                <button class="add-btn" type="button" data-name="Jackpot Quilted Bag">Add to bag</button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SERVICES (CSS Flexbox) ===================== -->
+    <section class="section services" id="services" aria-labelledby="services-title">
+      <div class="container">
+        <div class="section-head">
+          <p class="section-tag reveal">Our Services</p>
+          <h2 class="section-title reveal" id="services-title">More than a store. A <span class="gradient-text">style partner.</span></h2>
+        </div>
+
+        <!-- Flex container: cards sit in a row on desktop and wrap on smaller screens. -->
+        <div class="service-row">
+          <article class="service-card reveal">
+            <span class="service-card__num">01</span>
+            <h3>Personal Styling</h3>
+            <p>Book a free 30-minute session with a Dice stylist who builds outfits around your body, budget and vibe.</p>
+          </article>
+          <article class="service-card reveal">
+            <span class="service-card__num">02</span>
+            <h3>Custom Tailoring</h3>
+            <p>Every Dice piece can be altered or monogrammed in-store, so it fits like it was made only for you.</p>
+          </article>
+          <article class="service-card reveal">
+            <span class="service-card__num">03</span>
+            <h3>Express Delivery</h3>
+            <p>48-hour delivery in major cities, free returns within 30 days, and eco-friendly packaging every time.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== TESTIMONIALS ===================== -->
+    <section class="section testimonials" aria-labelledby="testimonials-title">
+      <div class="container">
+        <div class="section-head">
+          <p class="section-tag reveal">Loved by many</p>
+          <h2 class="section-title reveal" id="testimonials-title">What our customers say</h2>
+        </div>
+        <div class="testimonial-grid">
+          <!-- <blockquote> is the semantic element for quotations. -->
+          <blockquote class="testimonial glass reveal">
+            <p>"The Midnight Hoodie is the best thing I own. Heavy, soft and the pink stitching is perfect."</p>
+            <footer><strong>Amara O.</strong><span>Verified buyer</span></footer>
+          </blockquote>
+          <blockquote class="testimonial glass reveal">
+            <p>"Their stylist completely changed my wardrobe. I've never had this many compliments!"</p>
+            <footer><strong>Daniel K.</strong><span>Styling client</span></footer>
+          </blockquote>
+          <blockquote class="testimonial glass reveal">
+            <p>"Ordered on Monday, wore it on Wednesday. Packaging felt like opening a luxury gift."</p>
+            <footer><strong>Sophie L.</strong><span>Verified buyer</span></footer>
+          </blockquote>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== NEWSLETTER CTA ===================== -->
+    <section class="cta" aria-labelledby="cta-title">
+      <div class="container">
+        <div class="cta__box reveal">
+          <div class="cta__glow" aria-hidden="true"></div>
+          <h2 id="cta-title">Get 15% off your first order</h2>
+          <p>Join the Dice Club for early drops, private sales and style notes. No spam, ever.</p>
+          <!-- novalidate turns off the browser's built-in popups so OUR JavaScript validation is shown instead. -->
+          <form class="cta__form" id="newsletterForm" novalidate>
+            <label for="newsletterEmail" class="sr-only">Email address</label>
+            <input type="email" id="newsletterEmail" name="newsletterEmail" placeholder="you@example.com" autocomplete="email" />
+            <button type="submit" class="btn btn--light">Join the club</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== D. CONTACT ===================== -->
+    <section class="section contact" id="contact" aria-labelledby="contact-title">
+      <div class="container contact__grid">
+        <!-- Contact information. -->
+        <div class="contact__info">
+          <p class="section-tag reveal">Contact Us</p>
+          <h2 class="section-title reveal" id="contact-title">Let's <span class="gradient-text">talk</span> style.</h2>
+          <p class="reveal">Questions about sizing, orders or a styling session? Reach out. Our team replies within 24 hours.</p>
+          <p class="sample-note reveal">Note: the contact details below are <strong>sample details</strong> for this project.</p>
+
+          <!-- <address> is the semantic element for contact information. -->
+          <address class="contact__list">
+            <a href="mailto:hello@dice-sample.com" class="contact__item glass reveal">
+              <span class="contact__icon" aria-hidden="true">✉</span>
+              <span><small>Email (sample)</small>hello@dice-sample.com</span>
+            </a>
+            <a href="tel:+15550123456" class="contact__item glass reveal">
+              <span class="contact__icon" aria-hidden="true">☏</span>
+              <span><small>Phone (sample)</small>+1 (555) 012-3456</span>
+            </a>
+            <div class="contact__item glass reveal">
+              <span class="contact__icon" aria-hidden="true">⌖</span>
+              <span><small>Flagship store</small>24 Fashion Avenue, Victoria Island, Lagos</span>
+            </div>
+            <div class="contact__item glass reveal">
+              <span class="contact__icon" aria-hidden="true">◷</span>
+              <span><small>Opening hours</small>Mon – Sat · 9:00am – 8:00pm</span>
+            </div>
+          </address>
+        </div>
+
+        <!-- CONTACT FORM. novalidate = use our JavaScript validation instead of the browser's default bubbles. -->
+        <form class="contact-form glass reveal" id="contactForm" novalidate>
+          <h3 class="contact-form__title">Send us a message</h3>
+
+          <!-- Each field: a <label> linked to its input via for/id (clicking the label focuses the input; required for accessibility). -->
+          <div class="form-group">
+            <label for="fullName">Full name</label>
+            <input type="text" id="fullName" name="fullName" placeholder="e.g. Ada Johnson" autocomplete="name" />
+            <!-- Error messages are written into these <small> tags by JavaScript. aria-live announces them to screen readers. -->
+            <small class="error-msg" aria-live="polite"></small>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email address</label>
+            <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" />
+            <small class="error-msg" aria-live="polite"></small>
+          </div>
+
+          <div class="form-group">
+            <label for="subject">Subject</label>
+            <input type="text" id="subject" name="subject" placeholder="What is this about?" />
+            <small class="error-msg" aria-live="polite"></small>
+          </div>
+
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="5" placeholder="Tell us how we can help..." maxlength="500"></textarea>
+            <div class="form-group__meta">
+              <small class="error-msg" aria-live="polite"></small>
+              <!-- Live character counter updated by JavaScript. -->
+              <small class="char-count" id="charCount">0 / 500</small>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn--primary btn--full" id="submitBtn">
+            Submit message
+          </button>
+
+          <!-- Feedback box shown after validation. Clearly states it is a demo (no backend). -->
+          <p class="form-feedback" id="formFeedback" role="status" aria-live="polite"></p>
+          <p class="form-disclaimer">Demo form: no backend is connected, so messages are <strong>not sent</strong>. Valid entries are logged to the browser console for verification.</p>
         </form>
       </div>
     </section>
   </main>
 
-  <footer class="footer"> <!-- site footer -->
-    <div class="container footer-inner"> <!-- footer row -->
-      <a href="#home" class="logo">DICE</a> <!-- wordmark -->
-      <p>&copy; 2026 Dice. Student project, sample details only. Photos from <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a>.</p> <!-- credit; rel=noopener is a security best practice -->
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer">
+    <div class="container footer__grid">
+      <div class="footer__brand">
+        <a href="#home" class="logo">
+          <span class="logo__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none"><rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="currentColor" stroke-width="2" /><circle cx="8" cy="8" r="1.6" fill="currentColor" /><circle cx="12" cy="12" r="1.6" fill="currentColor" /><circle cx="16" cy="16" r="1.6" fill="currentColor" /></svg>
+          </span>
+          <span class="logo__text">DICE</span>
+        </a>
+        <p>Premium fashion and clothing accessories for people who play to win.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#products">Products</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Help</h4>
+        <ul>
+          <li><a href="#contact">Shipping</a></li>
+          <li><a href="#contact">Returns</a></li>
+          <li><a href="#contact">Size guide</a></li>
+          <li><a href="#contact">FAQ</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Follow</h4>
+        <ul>
+          <li><a href="#" aria-label="Instagram (sample link)">Instagram</a></li>
+          <li><a href="#" aria-label="TikTok (sample link)">TikTok</a></li>
+          <li><a href="#" aria-label="X / Twitter (sample link)">X / Twitter</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="container footer__bottom">
+      <!-- The year is inserted by JavaScript so it never goes out of date. -->
+      <p>&copy; <span id="year"></span> Dice Clothing Co. All rights reserved.</p>
+      <p>Built with HTML, CSS &amp; JavaScript.</p>
     </div>
   </footer>
 
-  <div class="toast" id="toast" role="status"></div> <!-- popup message box -->
-  <script src="js/script.js"></script> <!-- external JS at the end so the HTML exists first -->
+  <!-- Back-to-top button (appears after scrolling down, handled by JS). -->
+  <button class="back-to-top" id="backToTop" type="button" aria-label="Back to top">↑</button>
+
+  <!-- Container where JavaScript places small pop-up "toast" notifications. -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- EXTERNAL JAVASCRIPT FILE. type="module" also delays running until the HTML is parsed. Remove it and nothing is interactive. -->
+  <script type="module" src="/js/script.js"></script>
 </body>
+
 </html>

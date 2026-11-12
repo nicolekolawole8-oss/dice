@@ -1,515 +1,1721 @@
-/* ===== 1. VARIABLES: edit a colour here and it changes everywhere ===== */
-:root { /* :root = whole page; variables set here are usable anywhere */
-  --bg: #09070a; /* main near-black background */
-  --surface: #130e12; /* slightly lighter black for the footer */
-  --line: rgba(255, 255, 255, 0.12); /* thin divider lines */
-  --pink: #ff3d8b; /* main pink accent (used sparingly) */
-  --pink-soft: #ffb6d3; /* light pink for small labels */
-  --pink-deep: #c4175e; /* darker pink for button hover */
-  --text: #f4eef1; /* main text colour */
-  --muted: #a79aa1; /* secondary text colour */
-  --ease: cubic-bezier(0.22, 1, 0.36, 1); /* smooth easing used by animations */
-  --serif: "Instrument Serif", Georgia, serif; /* display font with a safe fallback */
-  --sans: "Inter", "Segoe UI", Arial, sans-serif; /* body font with fallbacks */
-} /* end variables */
+/* =====================================================================
+   DICE – MAIN STYLESHEET (css/style.css)
+   This EXTERNAL stylesheet is linked in index.html with <link rel="stylesheet">.
+   Every line is commented: what it does + what happens if you delete/change it.
+   ===================================================================== */
 
-/* ===== 2. RESET AND BASE ===== */
-* { /* every element */
-  margin: 0; /* removes default outer spacing */
-  padding: 0; /* removes default inner spacing */
-  box-sizing: border-box; /* padding/border stay inside the set width; deleting it can cause horizontal overflow */
-} /* end reset */
-html { /* root element */
-  scroll-behavior: smooth; /* nav links glide to sections */
-  scroll-padding-top: 70px; /* stops the fixed header covering section titles */
-} /* end html */
-body { /* whole page */
-  font-family: var(--sans); /* body font */
-  background: var(--bg); /* dark background */
-  color: var(--text); /* default text colour */
-  line-height: 1.7; /* comfortable line spacing */
-  -webkit-font-smoothing: antialiased; /* crisper text on Mac/iOS */
-  overflow-x: hidden; /* prevents sideways scrolling */
-} /* end body */
-img { /* all images */
-  display: block; /* removes the small gap under images */
-  max-width: 100%; /* never wider than the container (responsive) */
-} /* end img */
-a { /* all links */
-  color: inherit; /* use surrounding text colour */
-  text-decoration: none; /* remove underline */
-} /* end a */
-ul { /* all lists */
-  list-style: none; /* remove bullets */
-} /* end ul */
-.container { /* centred wrapper */
-  width: min(1180px, 90%); /* 90% wide on small screens, max 1180px */
-  margin-inline: auto; /* centre horizontally */
-} /* end container */
-.section { /* spacing for each section */
-  padding: 120px 0; /* large whitespace above and below */
-} /* end section */
+/* ---------------------------------------------------------------------
+   1. CSS VARIABLES (custom properties): one place to control the theme
+   --------------------------------------------------------------------- */
+:root {                                                   /* :root = the <html> element; variables defined here work everywhere. Delete this block and every var(...) below breaks (colours disappear). */
+  --black: #08080a;                                       /* Main background (near-black). Change it to change the whole page background. */
+  --black-2: #111114;                                     /* Slightly lighter black for cards/sections. Gives depth between layers. */
+  --black-3: #1b1b20;                                     /* Even lighter black for borders/hover states. */
+  --pink: #ff2d87;                                        /* Main brand pink (buttons, highlights). Changing this re-themes all accents. */
+  --pink-2: #ff6fae;                                      /* Lighter pink used in gradients. */
+  --pink-3: #ffc2dc;                                      /* Pale pink for soft text highlights. */
+  --pink-deep: #c0125f;                                   /* Darker pink for gradient depth and pressed states. */
+  --white: #ffffff;                                       /* Pure white for headings. */
+  --text: #e9e6ec;                                        /* Main body text colour (soft white, easier on the eyes than pure white). */
+  --muted: #9a95a3;                                       /* Grey for secondary text (descriptions). */
+  --border: rgba(255, 255, 255, 0.08);                    /* Very faint white border used on glass cards. */
+  --glass: rgba(255, 255, 255, 0.04);                     /* Transparent fill for glassmorphism. Raising the alpha makes cards more solid. */
+  --gradient: linear-gradient(135deg, var(--pink) 0%, var(--pink-2) 50%, var(--pink-deep) 100%); /* Signature pink gradient reused for buttons and text. */
+  --radius: 20px;                                         /* Standard corner rounding. 0 = sharp square corners. */
+  --radius-sm: 12px;                                      /* Smaller rounding for inputs/buttons. */
+  --shadow: 0 30px 60px -20px rgba(255, 45, 135, 0.35);   /* Pink glow shadow for "lifted" elements. */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);                 /* Smooth "ease-out" curve used by all animations. Replace with "linear" and motion looks robotic. */
+  --font-body: "Plus Jakarta Sans", system-ui, sans-serif; /* Body font. Fallbacks are used if Google Fonts fails to load. */
+  --font-display: "Syne", "Plus Jakarta Sans", sans-serif; /* Heading font with a bold, fashion-editorial look. */
+  --header-h: 76px;                                       /* Height of the fixed header, reused for scroll offsets. */
+}
 
-/* ===== 3. TYPOGRAPHY ===== */
-h1, h2, h3 { /* all headings */
-  font-family: var(--serif); /* elegant serif display font */
-  font-weight: 400; /* serif looks best at normal weight */
-  line-height: 1.08; /* tight heading lines */
-} /* end headings */
-h1 { /* main heading */
-  font-size: clamp(2.8rem, 7vw, 5.6rem); /* fluid size: min, preferred, max */
-} /* end h1 */
-h2 { /* section titles */
-  font-size: clamp(2.2rem, 4.5vw, 3.6rem); /* fluid size */
-  margin-bottom: 24px; /* space below */
-} /* end h2 */
-h3 { /* small titles */
-  font-size: 1.8rem; /* fixed size */
-  margin-bottom: 10px; /* space below */
-} /* end h3 */
-em { /* emphasised text */
-  color: var(--pink); /* pink italic accent */
-} /* end em */
-p { /* paragraphs */
-  color: var(--muted); /* softer than headings */
-} /* end p */
-strong { /* bold text */
-  color: var(--text); /* brighter than paragraph text */
-  font-weight: 500; /* medium weight */
-} /* end strong */
-.eyebrow { /* small label above headings */
-  font-size: 0.75rem; /* small */
-  letter-spacing: 0.22em; /* wide spacing */
-  text-transform: uppercase; /* capitals */
-  color: var(--pink); /* pink */
-  margin-bottom: 18px; /* space below */
-} /* end eyebrow */
-.num { /* small numbers 01, 02 */
-  display: block; /* own line */
-  font-size: 0.8rem; /* small */
-  letter-spacing: 0.15em; /* spacing */
-  color: var(--pink); /* pink */
-  margin-bottom: 14px; /* space below */
-} /* end num */
+/* ---------------------------------------------------------------------
+   2. RESET & BASE STYLES
+   --------------------------------------------------------------------- */
+*,                                                        /* Universal selector: targets EVERY element... */
+*::before,                                                /* ...plus every ::before pseudo-element... */
+*::after {                                                /* ...and every ::after pseudo-element. */
+  margin: 0;                                              /* Removes the browser's default margins so spacing is fully controlled by us. */
+  padding: 0;                                             /* Removes default padding (e.g. on lists). */
+  box-sizing: border-box;                                 /* BOX MODEL: width now INCLUDES padding + border. Delete this and elements with padding become wider than expected, causing overflow. */
+}
 
-/* ===== 4. BUTTONS ===== */
-.btn { /* shared button style */
-  display: inline-block; /* allows padding on links */
-  padding: 15px 34px; /* inner space */
-  border: 1px solid transparent; /* invisible border keeps sizes equal */
-  font: 500 0.85rem var(--sans); /* font shorthand: weight, size, family */
-  letter-spacing: 0.1em; /* spacing */
-  text-transform: uppercase; /* capitals */
-  cursor: pointer; /* hand cursor */
-  transition: background 0.3s, color 0.3s, transform 0.3s var(--ease); /* smooth hover */
-} /* end btn */
-.btn-primary { /* filled pink button */
-  background: var(--pink); /* pink fill */
-  color: #fff; /* white text */
-} /* end btn-primary */
-.btn-primary:hover { /* mouse over */
-  background: var(--pink-deep); /* darker pink */
-  transform: translateY(-2px); /* small lift */
-} /* end hover */
-.btn-primary:active { /* while pressed */
-  transform: scale(0.97); /* press-down microinteraction */
-} /* end active */
-.btn-outline { /* outline button */
-  border-color: rgba(255, 255, 255, 0.5); /* white outline */
-  color: #fff; /* white text */
-} /* end btn-outline */
-.btn-outline:hover { /* mouse over */
-  background: #fff; /* fills white */
-  color: var(--bg); /* text turns black */
-} /* end hover */
-.btn.added { /* class added by JS after clicking add to bag */
-  background: #fff; /* white */
-  color: var(--bg); /* black text */
-} /* end added */
+html {                                                    /* Styles for the root <html> element. */
+  scroll-behavior: smooth;                                /* Clicking nav links glides smoothly to sections. Delete it and the page jumps instantly. */
+  scroll-padding-top: var(--header-h);                    /* Stops the fixed header covering section titles when you jump to them. */
+  -webkit-text-size-adjust: 100%;                         /* Stops iPhones from auto-enlarging text when rotated. */
+}
 
-/* ===== 5. HEADER AND NAV (FLEXBOX) ===== */
-.site-header { /* top bar */
-  position: fixed; /* stays on screen while scrolling */
-  top: 0; /* top edge */
-  left: 0; /* left edge */
-  width: 100%; /* full width */
-  z-index: 100; /* above other content */
-  transition: background 0.4s, backdrop-filter 0.4s; /* smooth change on scroll */
-} /* end site-header */
-.site-header.scrolled { /* added by JS after scrolling */
-  background: rgba(9, 7, 10, 0.72); /* translucent black */
-  backdrop-filter: blur(14px); /* blur behind = glass effect */
-  border-bottom: 1px solid var(--line); /* thin line */
-} /* end scrolled */
-.nav { /* nav row */
-  display: flex; /* FLEXBOX row */
-  align-items: center; /* vertical centring */
-  justify-content: space-between; /* logo left, bag right */
-  height: 72px; /* bar height */
-} /* end nav */
-.logo { /* DICE wordmark */
-  font-weight: 600; /* semi-bold */
-  letter-spacing: 0.35em; /* wide spacing */
-  font-size: 1.1rem; /* size */
-} /* end logo */
-.nav-links { /* link list */
-  display: flex; /* horizontal row */
-  gap: 40px; /* space between links */
-} /* end nav-links */
-.nav-links a { /* each link */
-  position: relative; /* for the underline */
-  font-size: 0.85rem; /* size */
-  letter-spacing: 0.08em; /* spacing */
-  color: rgba(255, 255, 255, 0.75); /* soft white */
-  transition: color 0.3s; /* smooth colour */
-} /* end nav-links a */
-.nav-links a::after { /* underline line */
-  content: ""; /* required for pseudo-element */
-  position: absolute; /* placed against the link */
-  left: 0; /* start left */
-  bottom: -4px; /* just under text */
-  width: 0; /* hidden at first */
-  height: 1px; /* thin line */
-  background: var(--pink); /* pink */
-  transition: width 0.35s var(--ease); /* grows smoothly */
-} /* end underline */
-.nav-links a:hover { /* mouse over */
-  color: #fff; /* brighter */
-} /* end hover */
-.nav-links a:hover::after { /* mouse over, underline */
-  width: 100%; /* full width */
-} /* end hover underline */
-.nav-right { /* right group */
-  display: flex; /* row */
-  align-items: center; /* vertical centring */
-  gap: 18px; /* space between */
-} /* end nav-right */
-.bag-btn { /* bag button */
-  background: none; /* transparent */
-  border: 1px solid var(--line); /* thin border */
-  color: var(--text); /* text colour */
-  padding: 8px 18px; /* inner space */
-  font: 500 0.8rem var(--sans); /* font */
-  letter-spacing: 0.08em; /* spacing */
-  cursor: pointer; /* hand cursor */
-  transition: border-color 0.3s; /* smooth border */
-} /* end bag-btn */
-.bag-btn:hover { /* mouse over */
-  border-color: var(--pink); /* pink border */
-} /* end hover */
-.bag-btn span { /* number */
-  display: inline-block; /* lets transform work */
-} /* end span */
-.bag-btn span.bump { /* added by JS when an item is added */
-  animation: bump 0.4s var(--ease); /* plays pop animation */
-} /* end bump */
-.menu-btn { /* hamburger button */
-  display: none; /* hidden on desktop */
-  width: 32px; /* width */
-  height: 24px; /* height */
-  background: none; /* transparent */
-  border: none; /* no border */
-  cursor: pointer; /* hand cursor */
-  position: relative; /* for the lines */
-} /* end menu-btn */
-.menu-btn span { /* the two lines */
-  position: absolute; /* placed freely */
-  left: 0; /* left edge */
-  width: 100%; /* full width */
-  height: 1.5px; /* thin line */
-  background: #fff; /* white */
-  transition: transform 0.35s var(--ease), top 0.35s var(--ease); /* animates to an X */
-} /* end lines */
-.menu-btn span:nth-child(1) { top: 8px; } /* first line position */
-.menu-btn span:nth-child(2) { top: 15px; } /* second line position */
-.menu-btn.open span:nth-child(1) { top: 11px; transform: rotate(45deg); } /* first line becomes half of an X */
-.menu-btn.open span:nth-child(2) { top: 11px; transform: rotate(-45deg); } /* second line becomes other half */
+body {                                                    /* Styles for the whole page body. */
+  font-family: var(--font-body);                          /* Applies our body font to all text (inherited by children). */
+  font-size: 16px;                                        /* Base text size. Every rem unit is relative to the html size (16px default). */
+  line-height: 1.65;                                      /* Space between lines. Lower = cramped text, higher = airy text. */
+  color: var(--text);                                     /* Default text colour. */
+  background-color: var(--black);                         /* Dark page background. */
+  overflow-x: hidden;                                     /* RESPONSIVE: prevents sideways scrolling caused by animated/off-screen elements. */
+  -webkit-font-smoothing: antialiased;                    /* Makes text render thinner/crisper on Mac. */
+}
 
-/* ===== 6. HERO ===== */
-.hero { /* home section */
-  position: relative; /* lets image and overlay sit inside */
-  min-height: 100vh; /* at least full screen height */
-  display: flex; /* flexbox to centre content vertically */
-  align-items: center; /* vertical centring */
-  overflow: hidden; /* hides image parts that scale outside */
-} /* end hero */
-.hero-img { /* background photo */
-  position: absolute; /* fills the hero */
-  inset: 0; /* top/right/bottom/left all 0 */
-  width: 100%; /* full width */
-  height: 120%; /* taller than hero so parallax has room */
-  object-fit: cover; /* crops the photo to fill without stretching */
-  object-position: center 20%; /* focus point of the crop */
-  animation: slowzoom 18s ease-out forwards; /* gentle ambient zoom */
-  will-change: transform; /* performance hint for JS parallax */
-} /* end hero-img */
-.hero-overlay { /* dark gradient over the photo */
-  position: absolute; /* fills the hero */
-  inset: 0; /* all edges */
-  background: linear-gradient(90deg, rgba(9, 7, 10, 0.92) 0%, rgba(9, 7, 10, 0.55) 55%, rgba(9, 7, 10, 0.25) 100%), linear-gradient(0deg, var(--bg) 0%, transparent 25%); /* left-to-right fade plus bottom blend into the page */
-} /* end overlay */
-.hero-content { /* hero text */
-  position: relative; /* sits above image and overlay */
-  z-index: 2; /* stacking order */
-  padding-top: 90px; /* clears the header */
-} /* end hero-content */
-.lead { /* intro paragraph */
-  max-width: 480px; /* short readable lines */
-  margin: 26px 0 38px; /* space above and below */
-  font-size: 1.05rem; /* slightly larger */
-  color: rgba(255, 255, 255, 0.75); /* readable over photo */
-} /* end lead */
-.hero-actions { /* button row */
-  display: flex; /* row */
-  gap: 14px; /* space between */
-  flex-wrap: wrap; /* wrap on small screens */
-} /* end hero-actions */
+img {                                                     /* Element selector: every image. */
+  max-width: 100%;                                        /* RESPONSIVE: an image can never be wider than its container. Delete this and big images overflow on phones. */
+  height: auto;                                           /* Keeps the image's proportions when its width shrinks. */
+  display: block;                                         /* Removes the small gap under inline images. */
+}
 
-/* ===== 7. ABOUT (GRID) ===== */
-.about-grid { /* CSS GRID: image + text */
-  display: grid; /* turns on grid; deleting it stacks the items */
-  grid-template-columns: 1fr 1fr; /* two equal columns */
-  gap: 80px; /* space between columns */
-  align-items: center; /* vertical centring */
-} /* end about-grid */
-.about-img { /* about photo */
-  width: 100%; /* fill column */
-  aspect-ratio: 4 / 5; /* portrait shape */
-  object-fit: cover; /* crop without stretching */
-} /* end about-img */
-.about-text p { /* about paragraphs */
-  margin-bottom: 18px; /* space between paragraphs */
-  max-width: 480px; /* readable width */
-} /* end about-text p */
-.values { /* mission, vision, objectives */
-  display: grid; /* GRID */
-  grid-template-columns: repeat(3, 1fr); /* three equal columns */
-  gap: 40px; /* space between */
-  margin-top: 100px; /* space above */
-} /* end values */
-.value { /* each value block */
-  border-top: 1px solid var(--line); /* thin top line */
-  padding-top: 28px; /* space under line */
-  transition: border-color 0.4s; /* smooth hover */
-} /* end value */
-.value:hover { /* mouse over */
-  border-color: var(--pink); /* line turns pink */
-} /* end hover */
-.value li { /* objective list items */
-  color: var(--muted); /* soft text */
-  padding: 3px 0; /* vertical spacing */
-} /* end value li */
+a {                                                       /* All links. */
+  color: inherit;                                         /* Links use the surrounding text colour instead of default blue. */
+  text-decoration: none;                                  /* Removes the default underline. */
+}
 
-/* ===== 8. PRODUCTS (FLEXBOX) ===== */
-.section-head { /* heading block */
-  margin-bottom: 70px; /* space below */
-} /* end section-head */
-.product-list { /* all products */
-  display: flex; /* FLEXBOX */
-  flex-direction: column; /* stack rows */
-  gap: 110px; /* space between rows */
-} /* end product-list */
-.product { /* one product row */
-  display: flex; /* image and text side by side */
-  align-items: center; /* vertical centring */
-  gap: 90px; /* space between */
-} /* end product */
-.product.reverse { /* alternate rows */
-  flex-direction: row-reverse; /* image goes right */
-} /* end reverse */
-.product-media { /* image wrapper */
-  flex: 0 0 min(520px, 48%); /* fixed share of the row */
-  overflow: hidden; /* hides zoom overflow */
-} /* end product-media */
-.product-media img { /* product photo */
-  width: 100%; /* fill wrapper */
-  aspect-ratio: 4 / 5; /* portrait shape */
-  object-fit: cover; /* crop without stretching */
-  transition: transform 1s var(--ease); /* smooth zoom */
-} /* end product img */
-.product-media img.crop-top { /* cap photo crop */
-  object-position: center 12%; /* focus on the cap area */
-} /* end crop-top */
-.product:hover .product-media img { /* hovering the row */
-  transform: scale(1.05); /* slow zoom */
-} /* end hover */
-.product-info { /* text column */
-  flex: 1; /* takes remaining space */
-} /* end product-info */
-.product-info p { /* description */
-  max-width: 380px; /* readable width */
-} /* end product-info p */
-.buy-row { /* price + button */
-  display: flex; /* row */
-  align-items: center; /* vertical centring */
-  gap: 28px; /* space between */
-  margin-top: 30px; /* space above */
-  flex-wrap: wrap; /* wrap on small screens */
-} /* end buy-row */
-.price { /* price */
-  font-size: 1.15rem; /* size */
-  font-weight: 500; /* medium */
-} /* end price */
+ul,                                                       /* Grouping selector (comma): unordered lists... */
+ol {                                                      /* ...and ordered lists get the same rule. */
+  list-style: none;                                       /* Removes bullets/numbers; we design our own. */
+}
 
-/* ===== 9. CONTACT (FLEXBOX) ===== */
-.contact-wrap { /* info + form */
-  display: flex; /* side by side */
-  gap: 100px; /* space between */
-  align-items: flex-start; /* align to top */
-} /* end contact-wrap */
-.contact-info { /* left column */
-  flex: 1 1 38%; /* about 38% */
-} /* end contact-info */
-.contact-info li { /* each detail */
-  padding: 16px 0; /* vertical spacing */
-  border-bottom: 1px solid var(--line); /* divider line */
-  color: var(--muted); /* soft text */
-} /* end li */
-.contact-info li span { /* label */
-  display: block; /* own line */
-  font-size: 0.7rem; /* small */
-  letter-spacing: 0.2em; /* spacing */
-  text-transform: uppercase; /* capitals */
-  color: var(--pink-soft); /* light pink */
-} /* end label */
-.contact-form { /* right column */
-  flex: 1 1 56%; /* about 56% */
-} /* end contact-form */
-.field { /* label + input group */
-  margin-bottom: 14px; /* space below */
-} /* end field */
-.field label { /* labels */
-  display: block; /* own line */
-  font-size: 0.7rem; /* small */
-  letter-spacing: 0.2em; /* spacing */
-  text-transform: uppercase; /* capitals */
-  color: var(--muted); /* soft text */
-} /* end label */
-.field input, .field textarea { /* inputs */
-  width: 100%; /* full width */
-  padding: 12px 0; /* vertical padding only */
-  background: transparent; /* no fill */
-  border: none; /* remove default border */
-  border-bottom: 1px solid var(--line); /* underline style */
-  color: var(--text); /* typed text colour */
-  font: inherit; /* use page font */
-  transition: border-color 0.3s; /* smooth focus */
-} /* end inputs */
-.field textarea { /* message box */
-  resize: vertical; /* only resize up/down */
-} /* end textarea */
-.field input:focus, .field textarea:focus { /* when clicked into */
-  outline: none; /* remove default outline */
-  border-bottom-color: var(--pink); /* pink underline */
-} /* end focus */
-.field.invalid input, .field.invalid textarea { /* JS marks wrong fields */
-  border-bottom-color: #ff6b8a; /* red-pink underline */
-} /* end invalid */
-.error { /* error text */
-  display: block; /* own line */
-  min-height: 20px; /* prevents layout jump */
-  color: #ff8aa3; /* soft red */
-  font-size: 0.78rem; /* small */
-} /* end error */
-.form-status { /* message after submit */
-  margin-top: 16px; /* space above */
-  font-size: 0.9rem; /* size */
-} /* end form-status */
-.form-status.success { /* success state */
-  color: #8dffbf; /* green */
-} /* end success */
+button,                                                   /* Buttons... */
+input,                                                    /* ...text inputs... */
+textarea {                                                /* ...and textareas. */
+  font: inherit;                                          /* Form controls don't inherit fonts by default; this makes them match the page. */
+  color: inherit;                                         /* Same for colour. */
+}
 
-/* ===== 10. FOOTER AND TOAST ===== */
-.footer { /* footer */
-  background: var(--surface); /* lighter black */
-  border-top: 1px solid var(--line); /* top line */
-  padding: 40px 0; /* vertical space */
-} /* end footer */
-.footer-inner { /* footer row */
-  display: flex; /* row */
-  justify-content: space-between; /* left and right */
-  align-items: center; /* vertical centring */
-  gap: 20px; /* space between */
-  flex-wrap: wrap; /* wrap on small screens */
-} /* end footer-inner */
-.footer p { /* footer text */
-  font-size: 0.8rem; /* small */
-} /* end footer p */
-.footer p a { /* credit link */
-  color: var(--pink-soft); /* light pink */
-  text-decoration: underline; /* underline */
-} /* end link */
-.toast { /* popup */
-  position: fixed; /* fixed on screen */
-  bottom: 28px; /* from bottom */
-  left: 50%; /* horizontal centre */
-  transform: translate(-50%, 120px); /* centred and hidden below screen */
-  padding: 13px 26px; /* inner space */
-  background: rgba(19, 14, 18, 0.9); /* dark fill */
-  backdrop-filter: blur(10px); /* glass blur */
-  border: 1px solid var(--line); /* thin border */
-  font-size: 0.85rem; /* size */
-  transition: transform 0.5s var(--ease); /* slide animation */
-  z-index: 200; /* above everything */
-} /* end toast */
-.toast.show { /* added by JS */
-  transform: translate(-50%, 0); /* slides into view */
-} /* end show */
+button {                                                  /* Every button. */
+  cursor: pointer;                                        /* Shows the "hand" cursor so users know it's clickable. */
+  border: none;                                           /* Removes the default grey border. */
+  background: none;                                       /* Removes the default grey background. */
+}
 
-/* ===== 11. SCROLL REVEAL (JS adds .visible) ===== */
-.reveal { /* starting state */
-  opacity: 0; /* invisible until JS adds .visible; without the JS file they stay hidden */
-  transform: translateY(30px); /* pushed down */
-  transition: opacity 1s var(--ease), transform 1s var(--ease); /* smooth fade and rise */
-} /* end reveal */
-.reveal.visible { /* after scrolling into view */
-  opacity: 1; /* visible */
-  transform: none; /* original position */
-} /* end visible */
-.reveal[data-delay="1"] { transition-delay: 0.12s; } /* stagger step 1 */
-.reveal[data-delay="2"] { transition-delay: 0.24s; } /* stagger step 2 */
-.reveal[data-delay="3"] { transition-delay: 0.36s; } /* stagger step 3 */
+h1, h2, h3, h4 {                                          /* All headings share these styles. */
+  font-family: var(--font-display);                       /* Headings use the display font. */
+  color: var(--white);                                    /* Headings are brighter than body text for hierarchy. */
+  line-height: 1.1;                                       /* Tighter line height suits big headings. */
+  letter-spacing: -0.02em;                                /* Slightly tighter letters for a premium editorial look. */
+}
 
-/* ===== 12. KEYFRAMES ===== */
-@keyframes slowzoom { /* hero image zoom-out */
-  from { scale: 1.12; } /* starts zoomed in */
-  to { scale: 1; } /* settles to normal */
-} /* end slowzoom */
-@keyframes bump { /* bag number pop */
-  50% { transform: scale(1.5); } /* grows halfway */
-} /* end bump */
+::selection {                                             /* Pseudo-element: text highlighted by the user. */
+  background: var(--pink);                                /* Highlight colour becomes brand pink. */
+  color: var(--white);                                    /* Highlighted text turns white. */
+}
 
-/* ===== 13. RESPONSIVE (MEDIA QUERIES) ===== */
-@media (max-width: 960px) { /* tablets and below */
-  .section { padding: 90px 0; } /* less whitespace */
-  .about-grid { grid-template-columns: 1fr; gap: 40px; } /* about stacks in one column */
-  .values { grid-template-columns: 1fr; gap: 32px; margin-top: 70px; } /* values stack */
-  .product, .product.reverse { flex-direction: column; align-items: flex-start; gap: 28px; } /* products stack, image on top */
-  .product-media { flex-basis: auto; width: 100%; } /* image fills width */
-  .product-list { gap: 80px; } /* tighter spacing */
-  .contact-wrap { flex-direction: column; gap: 50px; } /* contact stacks */
-  .contact-info, .contact-form { width: 100%; flex-basis: auto; } /* full width */
-} /* end tablet query */
-@media (max-width: 720px) { /* phones */
-  .menu-btn { display: block; } /* show hamburger */
-  .nav-links { /* mobile dropdown */
-    position: absolute; /* below header */
-    top: 72px; /* under the bar */
-    left: 0; /* left edge */
-    width: 100%; /* full width */
-    flex-direction: column; /* stacked links */
-    gap: 0; /* no gap (padding used instead) */
-    background: rgba(9, 7, 10, 0.97); /* near-solid black */
-    max-height: 0; /* collapsed */
-    overflow: hidden; /* hides links when collapsed */
-    transition: max-height 0.5s var(--ease); /* smooth open */
-  } /* end nav-links */
-  .nav-links.open { max-height: 300px; } /* JS adds .open to expand */
-  .nav-links a { display: block; padding: 16px 5%; } /* large tap targets */
-  .hero-overlay { background: linear-gradient(0deg, var(--bg) 0%, rgba(9, 7, 10, 0.7) 60%, rgba(9, 7, 10, 0.5) 100%); } /* stronger overlay for text on small screens */
-  .hero-actions .btn { width: 100%; text-align: center; } /* full-width buttons */
-} /* end phone query */
-@media (prefers-reduced-motion: reduce) { /* users who disable animations */
-  * { animation: none !important; transition: none !important; } /* stop all motion */
-  .reveal { opacity: 1; transform: none; } /* show content immediately */
-} /* end reduced motion */
+:focus-visible {                                          /* Applies when navigating with the keyboard (Tab key). */
+  outline: 2px solid var(--pink);                         /* Visible pink focus ring = accessibility. Removing it makes keyboard navigation hard. */
+  outline-offset: 3px;                                    /* Small gap between element and ring. */
+}
+
+.sr-only {                                                /* "Screen-reader only": hides text visually but keeps it for screen readers. */
+  position: absolute;                                     /* Takes it out of the layout flow. */
+  width: 1px;                                             /* Shrinks it to 1 pixel. */
+  height: 1px;                                            /* ... */
+  overflow: hidden;                                       /* Hides any overflowing text. */
+  clip: rect(0 0 0 0);                                    /* Clips it fully out of view. */
+  white-space: nowrap;                                    /* Prevents wrapping, which could make it visible. */
+}
+
+/* ---------------------------------------------------------------------
+   3. REUSABLE LAYOUT HELPERS
+   --------------------------------------------------------------------- */
+.container {                                              /* Class selector: centres content and limits its width. */
+  width: 100%;                                            /* Fills the screen on small devices. */
+  max-width: 1200px;                                      /* Never wider than 1200px on big screens (keeps lines readable). */
+  margin: 0 auto;                                         /* "auto" left/right margins centre the block horizontally. */
+  padding: 0 24px;                                        /* Inner space on left/right so text never touches screen edges. */
+}
+
+.section {                                                /* Shared spacing for each page section. */
+  padding: 120px 0;                                       /* Generous top/bottom whitespace = premium feel. */
+  position: relative;                                     /* Lets absolutely-positioned children be placed relative to the section. */
+}
+
+.section-head {                                           /* Wrapper for a centred section title block. */
+  text-align: center;                                     /* Centres the heading text. */
+  max-width: 680px;                                       /* Keeps the heading block narrow and readable. */
+  margin: 0 auto 64px;                                    /* Centres it and adds space below. */
+}
+
+.section-tag {                                            /* Small uppercase label above titles. */
+  display: inline-block;                                  /* Allows padding while staying inline-sized. */
+  font-size: 0.78rem;                                     /* Small text. */
+  font-weight: 600;                                       /* Semi-bold. */
+  letter-spacing: 0.2em;                                  /* Wide spacing = stylish label look. */
+  text-transform: uppercase;                              /* Converts text to capitals. */
+  color: var(--pink-2);                                   /* Pink label colour. */
+  margin-bottom: 16px;                                    /* Space before the title. */
+}
+
+.section-title {                                          /* Main section heading (h2). */
+  font-size: clamp(2rem, 4.5vw, 3.4rem);                  /* RESPONSIVE: grows with screen width but stays between 2rem and 3.4rem. */
+  margin-bottom: 20px;                                    /* Space under the title. */
+}
+
+.section-sub {                                            /* Sub-text under section titles. */
+  color: var(--muted);                                    /* Grey for less emphasis. */
+  font-size: 1.05rem;                                     /* Slightly larger than body text. */
+}
+
+.gradient-text {                                          /* Makes text filled with the pink gradient. */
+  background: var(--gradient);                            /* Paints the gradient as the background. */
+  background-size: 200% 200%;                             /* Bigger than the text so it can be animated. */
+  -webkit-background-clip: text;                          /* Clips the background to the letter shapes (Safari/Chrome prefix). */
+  background-clip: text;                                  /* Standard version of the line above. */
+  color: transparent;                                     /* Makes the text itself transparent so the gradient shows. Delete this and text is solid. */
+  animation: gradientShift 6s ease infinite;              /* AMBIENT MOTION: slowly shifts the gradient. */
+}
+
+.glass {                                                  /* GLASSMORPHISM effect used on cards. */
+  background: var(--glass);                               /* Semi-transparent fill. */
+  border: 1px solid var(--border);                        /* Thin light edge like a glass pane. */
+  backdrop-filter: blur(16px) saturate(140%);             /* Blurs whatever is behind = frosted glass. Delete this and cards become plain transparent. */
+  -webkit-backdrop-filter: blur(16px) saturate(140%);     /* Safari needs the prefixed version. */
+}
+
+/* ---------------------------------------------------------------------
+   4. BUTTONS
+   --------------------------------------------------------------------- */
+.btn {                                                    /* Base style shared by all buttons. */
+  display: inline-flex;                                   /* FLEXBOX: lines up the text and icon side by side. */
+  align-items: center;                                    /* Vertically centres text and icon. */
+  justify-content: center;                                /* Horizontally centres content. */
+  gap: 10px;                                              /* Space between text and icon. */
+  padding: 16px 30px;                                     /* Inner space = bigger click target. */
+  border-radius: 999px;                                   /* Huge radius = pill shape. */
+  font-weight: 600;                                       /* Bold-ish button text. */
+  font-size: 0.95rem;                                     /* Button text size. */
+  position: relative;                                     /* Needed for the shine pseudo-element below. */
+  overflow: hidden;                                       /* Hides the shine when it's outside the button. */
+  transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease), background 0.3s; /* Smoothly animates hover changes. Delete for instant (jumpy) changes. */
+}
+
+.btn svg {                                                /* DESCENDANT COMBINATOR (space): SVG icons INSIDE a .btn. */
+  transition: transform 0.4s var(--ease);                 /* Lets the arrow slide smoothly. */
+}
+
+.btn:hover svg {                                          /* When the button is hovered, its icon... */
+  transform: translateX(4px);                             /* ...moves 4px right (microinteraction). */
+}
+
+.btn--primary {                                           /* Modifier: main pink button. */
+  background: var(--gradient);                            /* Pink gradient fill. */
+  color: var(--white);                                    /* White text. */
+  box-shadow: 0 10px 30px -10px rgba(255, 45, 135, 0.6);  /* Soft pink glow underneath. */
+}
+
+.btn--primary::after {                                    /* Pseudo-element used as a moving "shine" stripe. */
+  content: "";                                            /* Pseudo-elements need content (even empty) to appear. */
+  position: absolute;                                     /* POSITIONING: placed relative to the .btn (position: relative). */
+  top: 0;                                                 /* Starts at the top edge. */
+  left: -120%;                                            /* Starts hidden off the left side. */
+  width: 60%;                                             /* Width of the shine stripe. */
+  height: 100%;                                           /* Full button height. */
+  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.45), transparent); /* White streak fading at the edges. */
+  transition: left 0.7s var(--ease);                      /* Animates the sliding. */
+}
+
+.btn--primary:hover::after {                              /* On hover, the shine... */
+  left: 140%;                                             /* ...slides across to the right side. */
+}
+
+.btn--primary:hover {                                     /* Hover state for primary buttons. */
+  box-shadow: 0 18px 40px -10px rgba(255, 45, 135, 0.8);  /* Stronger glow = feels "lifted". */
+}
+
+.btn--ghost {                                             /* Modifier: outlined transparent button. */
+  border: 1px solid rgba(255, 255, 255, 0.18);            /* Faint outline. */
+  color: var(--white);                                    /* White text. */
+  background: rgba(255, 255, 255, 0.03);                  /* Nearly invisible fill. */
+}
+
+.btn--ghost:hover {                                       /* Hover for the ghost button. */
+  border-color: var(--pink);                              /* Outline turns pink. */
+  background: rgba(255, 45, 135, 0.1);                    /* Light pink tint. */
+}
+
+.btn--light {                                             /* White button used on the pink CTA box. */
+  background: var(--white);                               /* White background. */
+  color: var(--black);                                    /* Dark text for contrast. */
+}
+
+.btn--light:hover {                                       /* Hover for the light button. */
+  transform: translateY(-2px);                            /* Lifts 2px up. */
+}
+
+.btn--full {                                              /* Makes a button stretch full width. */
+  width: 100%;                                            /* Fills its container. */
+}
+
+/* ---------------------------------------------------------------------
+   5. SCROLL PROGRESS + CURSOR GLOW (ambient effects)
+   --------------------------------------------------------------------- */
+.scroll-progress {                                        /* Thin bar at the very top showing scroll progress. */
+  position: fixed;                                        /* POSITIONING: stays stuck to the screen while scrolling. */
+  top: 0;                                                 /* Top edge of the window. */
+  left: 0;                                                /* Left edge. */
+  height: 3px;                                            /* Thin bar. */
+  width: 0;                                               /* Starts empty; JavaScript increases it. */
+  background: var(--gradient);                            /* Pink gradient fill. */
+  z-index: 1001;                                          /* Sits above the header (z-index 1000). */
+}
+
+.cursor-glow {                                            /* Large soft pink light following the mouse. */
+  position: fixed;                                        /* Positioned relative to the window. */
+  top: 0;                                                 /* Base position (JS moves it with transform). */
+  left: 0;                                                /* ... */
+  width: 500px;                                           /* Size of the glow. */
+  height: 500px;                                          /* ... */
+  border-radius: 50%;                                     /* Circle. */
+  background: radial-gradient(circle, rgba(255, 45, 135, 0.12), transparent 65%); /* Pink centre fading to transparent. */
+  pointer-events: none;                                   /* Mouse clicks pass through it. Delete this and you can't click things under the glow! */
+  z-index: 0;                                             /* Stays behind content. */
+  transform: translate(-50%, -50%);                       /* Centres the circle on the cursor. */
+  transition: opacity 0.4s;                               /* Fades in/out smoothly. */
+  opacity: 0;                                             /* Hidden until the mouse moves (JS sets opacity to 1). */
+}
+
+/* ---------------------------------------------------------------------
+   6. HEADER & NAVIGATION (Flexbox)
+   --------------------------------------------------------------------- */
+.header {                                                 /* The top bar. */
+  position: fixed;                                        /* Stays visible at the top while scrolling. */
+  top: 0;                                                 /* Stick to the top. */
+  left: 0;                                                /* Start at the left. */
+  right: 0;                                               /* Stretch to the right (full width). */
+  z-index: 1000;                                          /* Above all page content. Lower it and content slides over the menu. */
+  transition: background 0.4s, border-color 0.4s, backdrop-filter 0.4s; /* Smooth change when it becomes "scrolled". */
+  border-bottom: 1px solid transparent;                   /* Invisible border that appears after scrolling. */
+}
+
+.header.scrolled {                                        /* Chained class selector: header that ALSO has .scrolled (added by JS). */
+  background: rgba(8, 8, 10, 0.7);                        /* Semi-transparent dark fill. */
+  backdrop-filter: blur(18px);                            /* Frosted glass behind the nav. */
+  -webkit-backdrop-filter: blur(18px);                    /* Safari version. */
+  border-bottom-color: var(--border);                     /* Shows a thin bottom line. */
+}
+
+.nav {                                                    /* Inner nav bar. */
+  height: var(--header-h);                                /* Fixed height from our variable. */
+  display: flex;                                          /* FLEXBOX: logo, links and actions in one row. Delete it and they stack vertically. */
+  align-items: center;                                    /* Vertically centres all items. */
+  justify-content: space-between;                         /* Pushes logo left, actions right, links in between. */
+  gap: 24px;                                              /* Minimum space between groups. */
+}
+
+.logo {                                                   /* Brand logo link. */
+  display: flex;                                          /* FLEXBOX: icon and text side by side. */
+  align-items: center;                                    /* Vertically aligned. */
+  gap: 10px;                                              /* Space between icon and text. */
+  font-family: var(--font-display);                       /* Display font. */
+  font-weight: 800;                                       /* Extra bold. */
+  font-size: 1.35rem;                                     /* Logo size. */
+  letter-spacing: 0.18em;                                 /* Spaced-out luxury lettering. */
+  color: var(--white);                                    /* White text. */
+}
+
+.logo__icon {                                             /* Rounded square holding the dice icon. */
+  display: grid;                                          /* GRID used just to centre the icon. */
+  place-items: center;                                    /* Centres horizontally AND vertically in one line. */
+  width: 38px;                                            /* Box size. */
+  height: 38px;                                           /* ... */
+  border-radius: 11px;                                    /* Rounded corners. */
+  background: var(--gradient);                            /* Pink fill. */
+  color: var(--white);                                    /* SVG uses currentColor → white. */
+  transition: transform 0.6s var(--ease);                 /* For the spin on hover. */
+}
+
+.logo:hover .logo__icon {                                 /* When the logo is hovered, its icon... */
+  transform: rotate(180deg);                              /* ...rolls like a dice (microinteraction). */
+}
+
+.nav__links {                                             /* The list of links. */
+  display: flex;                                          /* FLEXBOX: links in a row. */
+  align-items: center;                                    /* Vertically centred. */
+  gap: 6px;                                               /* Space between links. */
+  padding: 6px;                                           /* Inner space around the pill group. */
+  border-radius: 999px;                                   /* Pill shape. */
+  background: rgba(255, 255, 255, 0.04);                  /* Faint glass fill. */
+  border: 1px solid var(--border);                        /* Thin outline. */
+}
+
+.nav__link {                                              /* Each nav link. */
+  display: block;                                         /* Makes the full padded area clickable. */
+  padding: 8px 18px;                                      /* Click area. */
+  border-radius: 999px;                                   /* Pill shape for the active highlight. */
+  font-size: 0.9rem;                                      /* Link size. */
+  font-weight: 500;                                       /* Medium weight. */
+  color: var(--muted);                                    /* Grey when inactive. */
+  transition: color 0.3s, background 0.3s;                /* Smooth hover change. */
+}
+
+.nav__link:hover,                                         /* Hovered link... */
+.nav__link.active {                                       /* ...or link marked active by JavaScript (current section). */
+  color: var(--white);                                    /* Turns white. */
+  background: rgba(255, 45, 135, 0.16);                   /* Pink tinted pill. */
+}
+
+.nav__actions {                                           /* Group: bag button + hamburger. */
+  display: flex;                                          /* FLEXBOX row. */
+  align-items: center;                                    /* Vertically centred. */
+  gap: 12px;                                              /* Space between buttons. */
+}
+
+.bag-btn {                                                /* Shopping bag button. */
+  position: relative;                                     /* So the count bubble can be positioned on its corner. */
+  width: 44px;                                            /* Square size (44px = recommended touch size). */
+  height: 44px;                                           /* ... */
+  border-radius: 50%;                                     /* Circle. */
+  display: grid;                                          /* Centre the icon. */
+  place-items: center;                                    /* ... */
+  border: 1px solid var(--border);                        /* Outline. */
+  background: rgba(255, 255, 255, 0.04);                  /* Faint fill. */
+  color: var(--white);                                    /* Icon colour. */
+  transition: border-color 0.3s, transform 0.3s;          /* Smooth hover. */
+}
+
+.bag-btn:hover {                                          /* Bag hover. */
+  border-color: var(--pink);                              /* Pink outline. */
+}
+
+.bag-btn.bump {                                           /* Class briefly added by JS when an item is added. */
+  animation: bump 0.5s var(--ease);                       /* Plays the bump keyframes (feedback). */
+}
+
+.bag-btn__count {                                         /* Little number bubble. */
+  position: absolute;                                     /* Positioned relative to .bag-btn. */
+  top: -4px;                                              /* Slightly above the top edge. */
+  right: -4px;                                            /* Slightly past the right edge. */
+  min-width: 20px;                                        /* Stays round for single digits but grows for "10+". */
+  height: 20px;                                           /* Bubble height. */
+  padding: 0 5px;                                         /* Side padding for bigger numbers. */
+  border-radius: 999px;                                   /* Round. */
+  background: var(--pink);                                /* Pink bubble. */
+  color: var(--white);                                    /* White number. */
+  font-size: 0.7rem;                                      /* Small text. */
+  font-weight: 700;                                       /* Bold. */
+  display: grid;                                          /* Centre the number. */
+  place-items: center;                                    /* ... */
+}
+
+.menu-toggle {                                            /* Hamburger button. */
+  display: none;                                          /* Hidden on desktop; shown in the tablet/mobile media query. */
+  width: 44px;                                            /* Touch-friendly size. */
+  height: 44px;                                           /* ... */
+  border-radius: 50%;                                     /* Circle. */
+  border: 1px solid var(--border);                        /* Outline. */
+  flex-direction: column;                                 /* FLEXBOX column: stacks the 3 lines. */
+  align-items: center;                                    /* Centres lines horizontally. */
+  justify-content: center;                                /* Centres lines vertically. */
+  gap: 5px;                                               /* Space between lines. */
+}
+
+.menu-toggle span {                                       /* Each of the 3 hamburger lines. */
+  width: 18px;                                            /* Line length. */
+  height: 2px;                                            /* Line thickness. */
+  background: var(--white);                               /* Line colour. */
+  border-radius: 2px;                                     /* Rounded ends. */
+  transition: transform 0.4s var(--ease), opacity 0.3s;   /* Smooth morph into an "X". */
+}
+
+.menu-toggle.open span:nth-child(1) {                     /* :nth-child(1) = first line, when menu is open... */
+  transform: translateY(7px) rotate(45deg);               /* ...moves down and rotates → one half of the "X". */
+}
+
+.menu-toggle.open span:nth-child(2) {                     /* Middle line when open... */
+  opacity: 0;                                             /* ...fades out. */
+}
+
+.menu-toggle.open span:nth-child(3) {                     /* Third line when open... */
+  transform: translateY(-7px) rotate(-45deg);             /* ...moves up and rotates → other half of the "X". */
+}
+
+/* ---------------------------------------------------------------------
+   7. HERO (CSS Grid two-column layout)
+   --------------------------------------------------------------------- */
+.hero {                                                   /* Hero/home section. */
+  position: relative;                                     /* Anchor for the decorative blobs. */
+  min-height: 100vh;                                      /* At least the full screen height. */
+  padding: calc(var(--header-h) + 60px) 0 80px;           /* Top padding clears the fixed header. calc() mixes units. */
+  display: flex;                                          /* FLEXBOX used to vertically centre the content. */
+  align-items: center;                                    /* Vertical centring. */
+  overflow: hidden;                                       /* Clips blobs so they don't cause horizontal scroll. */
+}
+
+.hero__blob {                                             /* Shared style for the glowing blobs. */
+  position: absolute;                                     /* Placed freely inside .hero. */
+  border-radius: 50%;                                     /* Circle. */
+  filter: blur(90px);                                     /* Heavy blur = soft ambient light. */
+  opacity: 0.55;                                          /* Semi-transparent. */
+  pointer-events: none;                                   /* Can't block clicks. */
+  animation: float 14s ease-in-out infinite;              /* AMBIENT MOTION: slow floating. */
+}
+
+.hero__blob--one {                                        /* First blob. */
+  width: 480px;                                           /* Size. */
+  height: 480px;                                          /* ... */
+  background: var(--pink);                                /* Pink light. */
+  top: -120px;                                            /* Partly off the top. */
+  right: -100px;                                          /* Partly off the right. */
+}
+
+.hero__blob--two {                                        /* Second blob. */
+  width: 380px;                                           /* Size. */
+  height: 380px;                                          /* ... */
+  background: var(--pink-deep);                           /* Deeper pink. */
+  bottom: -140px;                                         /* Partly below. */
+  left: -120px;                                           /* Partly off the left. */
+  animation-delay: -7s;                                   /* Starts mid-animation so the blobs move out of sync. */
+}
+
+.hero__grid-lines {                                       /* Subtle grid pattern in the background. */
+  position: absolute;                                     /* Covers the hero. */
+  inset: 0;                                               /* Shorthand for top/right/bottom/left = 0 (fills parent). */
+  background-image:                                       /* Two gradients drawn as thin lines... */
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),   /* ...horizontal lines... */
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px); /* ...vertical lines. */
+  background-size: 64px 64px;                             /* Size of each grid square. */
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%); /* Fades the grid out towards the edges. */
+  -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%); /* Safari version. */
+  pointer-events: none;                                   /* Doesn't block clicks. */
+}
+
+.hero__grid {                                             /* CSS GRID: two columns (text | image). */
+  display: grid;                                          /* Turns on grid layout. Delete it and the image drops below the text. */
+  grid-template-columns: 1.1fr 0.9fr;                     /* Two COLUMNS: text slightly wider than the image. "fr" = fraction of free space. */
+  align-items: center;                                    /* Vertically centres both columns. */
+  gap: 64px;                                              /* GAP between the columns. */
+  position: relative;                                     /* Above the blobs in stacking order. */
+  z-index: 1;                                             /* ... */
+}
+
+.eyebrow {                                                /* Small pill above the hero title. */
+  display: inline-flex;                                   /* FLEXBOX inline: dot + text. */
+  align-items: center;                                    /* Vertical centre. */
+  gap: 10px;                                              /* Dot-to-text space. */
+  padding: 8px 16px;                                      /* Pill padding. */
+  border-radius: 999px;                                   /* Pill shape. */
+  border: 1px solid rgba(255, 45, 135, 0.35);             /* Pink outline. */
+  background: rgba(255, 45, 135, 0.08);                   /* Pink tint. */
+  color: var(--pink-3);                                   /* Pale pink text. */
+  font-size: 0.85rem;                                     /* Small. */
+  font-weight: 500;                                       /* Medium. */
+  margin-bottom: 28px;                                    /* Space before the title. */
+}
+
+.eyebrow__dot {                                           /* Glowing dot. */
+  width: 8px;                                             /* Size. */
+  height: 8px;                                            /* ... */
+  border-radius: 50%;                                     /* Circle. */
+  background: var(--pink);                                /* Pink. */
+  box-shadow: 0 0 0 0 rgba(255, 45, 135, 0.7);            /* Starting point of the pulse ring. */
+  animation: pulse 2s infinite;                           /* "Live" pulse animation. */
+}
+
+.hero__title {                                            /* Main h1. */
+  font-size: clamp(2.6rem, 6.5vw, 5.4rem);                /* Responsive: big on desktop, smaller on phones. */
+  font-weight: 800;                                       /* Extra bold. */
+  margin-bottom: 24px;                                    /* Space below. */
+}
+
+.hero__brand {                                            /* "Dice." word in the title. */
+  position: relative;                                     /* Anchor for the underline. */
+  white-space: nowrap;                                    /* Never breaks across lines. */
+}
+
+.hero__brand::after {                                     /* Decorative pink underline. */
+  content: "";                                            /* Required for pseudo-element. */
+  position: absolute;                                     /* Positioned under the word. */
+  left: 0;                                                /* Starts at the left of the word. */
+  bottom: 0.05em;                                         /* Just above the baseline. */
+  width: 100%;                                            /* Full word width. */
+  height: 0.12em;                                         /* Thickness scales with font size. */
+  background: var(--gradient);                            /* Pink gradient. */
+  border-radius: 4px;                                     /* Rounded ends. */
+  transform-origin: left;                                 /* Grows from the left. */
+  animation: underline 1.4s 0.8s var(--ease) both;        /* Draws itself in after a short delay. */
+}
+
+.hero__text {                                             /* Intro paragraph. */
+  font-size: 1.12rem;                                     /* Slightly larger. */
+  color: var(--muted);                                    /* Grey. */
+  max-width: 540px;                                       /* Comfortable line length. */
+  margin-bottom: 36px;                                    /* Space before buttons. */
+}
+
+.hero__cta {                                              /* Button group. */
+  display: flex;                                          /* FLEXBOX row. */
+  flex-wrap: wrap;                                        /* Buttons wrap to a new line on narrow screens (no overflow). */
+  gap: 14px;                                              /* Space between buttons. */
+  margin-bottom: 48px;                                    /* Space before stats. */
+}
+
+.hero__stats {                                            /* Stats list. */
+  display: flex;                                          /* FLEXBOX row of stats. */
+  flex-wrap: wrap;                                        /* Wraps on small screens. */
+  gap: 40px;                                              /* Space between stats. */
+  padding-top: 32px;                                      /* Space above (under the divider). */
+  border-top: 1px solid var(--border);                    /* Divider line. */
+}
+
+.hero__stats li {                                         /* Each stat item (descendant selector). */
+  display: flex;                                          /* Number + label on one line. */
+  align-items: baseline;                                  /* Aligns along the text baseline. */
+  flex-wrap: wrap;                                        /* Label can wrap under number. */
+  column-gap: 2px;                                        /* Tiny space between number and label. */
+  max-width: 160px;                                       /* Keeps each stat compact. */
+}
+
+.hero__stats strong {                                     /* The big number. */
+  font-family: var(--font-display);                       /* Display font. */
+  font-size: 2.2rem;                                      /* Big. */
+  color: var(--white);                                    /* White. */
+  line-height: 1;                                         /* Tight. */
+}
+
+.hero__stats span {                                       /* Stat label. */
+  font-size: 0.85rem;                                     /* Small. */
+  color: var(--muted);                                    /* Grey. */
+}
+
+.hero__visual {                                           /* Image column. */
+  position: relative;                                     /* Anchor for floating cards. */
+}
+
+.hero__image-wrap {                                       /* Frame around the hero image. */
+  border-radius: 32px;                                    /* Big rounded corners. */
+  overflow: hidden;                                       /* Clips the image to the rounded corners. */
+  aspect-ratio: 4 / 5;                                    /* Keeps a portrait shape at any width. */
+  box-shadow: var(--shadow);                              /* Pink glow. */
+  border: 1px solid var(--border);                        /* Thin edge. */
+}
+
+.hero__image {                                            /* The image itself. */
+  width: 100%;                                            /* Fills the frame width. */
+  height: 100%;                                           /* Fills the frame height. */
+  object-fit: cover;                                      /* Crops instead of stretching. Delete it and the image may look squashed. */
+  transition: transform 1.2s var(--ease);                 /* Smooth zoom. */
+}
+
+.hero__visual:hover .hero__image {                        /* Hovering the visual zooms the image. */
+  transform: scale(1.05);                                 /* 5% zoom. */
+}
+
+.float-card {                                             /* Floating glass info cards. */
+  position: absolute;                                     /* Placed over the image. */
+  padding: 16px 20px;                                     /* Inner space. */
+  border-radius: 18px;                                    /* Rounded. */
+  display: flex;                                          /* FLEXBOX column for the text. */
+  flex-direction: column;                                 /* Stacks vertically. */
+  gap: 2px;                                               /* Small spacing. */
+  background: rgba(17, 17, 20, 0.55);                     /* Darker glass for readability on the photo. */
+  animation: float 6s ease-in-out infinite;               /* Gentle bobbing. */
+}
+
+.float-card strong {                                      /* Card headline. */
+  color: var(--white);                                    /* White. */
+  font-size: 1rem;                                        /* Size. */
+}
+
+.float-card__label {                                      /* Small label. */
+  font-size: 0.75rem;                                     /* Small. */
+  color: var(--pink-3);                                   /* Pale pink. */
+  text-transform: uppercase;                              /* Capitals. */
+  letter-spacing: 0.12em;                                 /* Spaced. */
+}
+
+.float-card__stars {                                      /* Star rating. */
+  color: var(--pink);                                     /* Pink stars. */
+  letter-spacing: 2px;                                    /* Space between stars. */
+}
+
+.float-card--top {                                        /* Top-left card. */
+  top: 8%;                                                /* 8% from the top of the visual. */
+  left: -40px;                                            /* Hangs off the left edge. */
+}
+
+.float-card--bottom {                                     /* Bottom-right card. */
+  bottom: 8%;                                             /* 8% from the bottom. */
+  right: -30px;                                           /* Hangs off the right edge. */
+  animation-delay: -3s;                                   /* Out of sync with the top card. */
+}
+
+/* ---------------------------------------------------------------------
+   8. MARQUEE (infinite scrolling text)
+   --------------------------------------------------------------------- */
+.marquee {                                                /* Strip container. */
+  overflow: hidden;                                       /* Hides text outside the strip. Delete and the page scrolls sideways! */
+  padding: 22px 0;                                        /* Height of the strip. */
+  border-top: 1px solid var(--border);                    /* Top line. */
+  border-bottom: 1px solid var(--border);                 /* Bottom line. */
+  background: var(--black-2);                             /* Slightly lighter background. */
+}
+
+.marquee__track {                                         /* The moving row. */
+  display: flex;                                          /* FLEXBOX row of words. */
+  gap: 40px;                                              /* Space between words. */
+  width: max-content;                                     /* As wide as all its words (not the screen). */
+  animation: marquee 30s linear infinite;                 /* Scrolls forever at constant speed. */
+}
+
+.marquee__track span {                                    /* Each word. */
+  font-family: var(--font-display);                       /* Display font. */
+  font-size: 1.4rem;                                      /* Size. */
+  font-weight: 700;                                       /* Bold. */
+  text-transform: uppercase;                              /* Capitals. */
+  color: var(--muted);                                    /* Grey. */
+  white-space: nowrap;                                    /* Never wraps. */
+}
+
+.marquee__track span:nth-child(even) {                    /* Every 2nd span (the ✦ stars)... */
+  color: var(--pink);                                     /* ...is pink. */
+}
+
+.marquee:hover .marquee__track {                          /* Hovering the strip... */
+  animation-play-state: paused;                           /* ...pauses the motion (microinteraction). */
+}
+
+/* ---------------------------------------------------------------------
+   9. ABOUT (Grid)
+   --------------------------------------------------------------------- */
+.about__grid {                                            /* CSS GRID: image | text. */
+  display: grid;                                          /* Grid layout. */
+  grid-template-columns: 1fr 1fr;                         /* Two equal COLUMNS. */
+  gap: 80px;                                              /* GAP between them. */
+  align-items: start;                                     /* Align to top. */
+}
+
+.about__media {                                           /* <figure> holding the image. */
+  position: relative;                                     /* Anchor for the badge. */
+  border-radius: 28px;                                    /* Rounded corners. */
+  overflow: hidden;                                       /* Clips image corners. */
+  position: sticky;                                       /* POSITIONING: sticks while the text scrolls past (desktop). */
+  top: calc(var(--header-h) + 24px);                      /* Where it sticks (below the header). */
+}
+
+.about__media img {                                       /* The about image. */
+  width: 100%;                                            /* Full width. */
+  aspect-ratio: 8 / 9;                                    /* Fixed shape. */
+  object-fit: cover;                                      /* Crop to fill. */
+}
+
+.about__badge {                                           /* Glass badge on the image. */
+  position: absolute;                                     /* Over the image. */
+  left: 20px;                                             /* From the left. */
+  bottom: 20px;                                           /* From the bottom. */
+  padding: 16px 22px;                                     /* Inner space. */
+  border-radius: 16px;                                    /* Rounded. */
+  background: rgba(8, 8, 10, 0.5);                        /* Dark glass. */
+  display: flex;                                          /* FLEXBOX column. */
+  flex-direction: column;                                 /* Stack. */
+}
+
+.about__badge strong {                                    /* "Est. 2018". */
+  font-family: var(--font-display);                       /* Display font. */
+  font-size: 1.4rem;                                      /* Size. */
+  color: var(--white);                                    /* White. */
+}
+
+.about__badge span {                                      /* Locations. */
+  font-size: 0.8rem;                                      /* Small. */
+  color: var(--pink-3);                                   /* Pale pink. */
+}
+
+.about__content > p {                                     /* CHILD COMBINATOR (>): only paragraphs DIRECTLY inside .about__content (not timeline paragraphs). */
+  color: var(--muted);                                    /* Grey. */
+  margin-bottom: 18px;                                    /* Space between paragraphs. */
+  font-size: 1.05rem;                                     /* Slightly larger. */
+}
+
+.about__subtitle {                                        /* "Our story so far". */
+  font-size: 1.3rem;                                      /* Size. */
+  margin: 40px 0 24px;                                    /* Space above and below. */
+}
+
+.timeline {                                               /* Ordered list of history events. */
+  position: relative;                                     /* Anchor for the vertical line. */
+  padding-left: 28px;                                     /* Room for the line and dots. */
+}
+
+.timeline::before {                                       /* The vertical line. */
+  content: "";                                            /* Required. */
+  position: absolute;                                     /* Placed inside .timeline. */
+  left: 5px;                                              /* Aligned with dots. */
+  top: 6px;                                               /* Starts at first dot. */
+  bottom: 6px;                                            /* Ends at last dot. */
+  width: 2px;                                             /* Thickness. */
+  background: linear-gradient(var(--pink), transparent);  /* Fades from pink to nothing. */
+}
+
+.timeline__item {                                         /* Each event. */
+  position: relative;                                     /* Anchor for its dot. */
+  padding-bottom: 26px;                                   /* Space between events. */
+}
+
+.timeline__item::before {                                 /* The dot. */
+  content: "";                                            /* Required. */
+  position: absolute;                                     /* Positioned on the line. */
+  left: -28px;                                            /* Moves back into the padding area. */
+  top: 6px;                                               /* Aligned with the year text. */
+  width: 12px;                                            /* Size. */
+  height: 12px;                                           /* ... */
+  border-radius: 50%;                                     /* Circle. */
+  background: var(--black);                               /* Hollow look. */
+  border: 2px solid var(--pink);                          /* Pink ring. */
+}
+
+.timeline__year {                                         /* Year label. */
+  font-family: var(--font-display);                       /* Display font. */
+  font-weight: 700;                                       /* Bold. */
+  color: var(--pink-2);                                   /* Pink. */
+}
+
+.timeline__item p {                                       /* Event description. */
+  color: var(--muted);                                    /* Grey. */
+  font-size: 0.95rem;                                     /* Slightly smaller. */
+}
+
+.values {                                                 /* CSS GRID for Mission/Vision/Objectives. */
+  display: grid;                                          /* Grid. */
+  grid-template-columns: repeat(3, 1fr);                  /* Three equal COLUMNS. repeat() avoids writing "1fr 1fr 1fr". */
+  gap: 24px;                                              /* GAP between cards. */
+  margin-top: 100px;                                      /* Space above. */
+}
+
+.value-card {                                             /* Each card. */
+  padding: 36px 30px;                                     /* Inner space (BOX MODEL: padding). */
+  border-radius: var(--radius);                           /* Rounded. */
+  transition: transform 0.5s var(--ease), border-color 0.4s; /* Smooth hover. */
+}
+
+.value-card:hover {                                       /* Card hover. */
+  transform: translateY(-8px);                            /* Lifts up. */
+  border-color: rgba(255, 45, 135, 0.4);                  /* Pink edge. */
+}
+
+.value-card__icon {                                       /* Icon box. */
+  width: 52px;                                            /* Size. */
+  height: 52px;                                           /* ... */
+  display: grid;                                          /* Centre the symbol. */
+  place-items: center;                                    /* ... */
+  border-radius: 14px;                                    /* Rounded. */
+  background: rgba(255, 45, 135, 0.14);                   /* Pink tint. */
+  color: var(--pink);                                     /* Pink symbol. */
+  font-size: 1.4rem;                                      /* Symbol size. */
+  margin-bottom: 22px;                                    /* Space below. */
+}
+
+.value-card h3 {                                          /* Card heading. */
+  font-size: 1.3rem;                                      /* Size. */
+  margin-bottom: 12px;                                    /* Space below. */
+}
+
+.value-card p,                                            /* Card paragraph... */
+.value-card__list li {                                    /* ...and list items share styles. */
+  color: var(--muted);                                    /* Grey. */
+  font-size: 0.95rem;                                     /* Size. */
+}
+
+.value-card__list li {                                    /* Objective list items. */
+  position: relative;                                     /* Anchor for the custom bullet. */
+  padding-left: 22px;                                     /* Room for the bullet. */
+  margin-bottom: 8px;                                     /* Spacing. */
+}
+
+.value-card__list li::before {                            /* Custom bullet. */
+  content: "→";                                           /* Arrow character as bullet. */
+  position: absolute;                                     /* Placed in the padding. */
+  left: 0;                                                /* Far left. */
+  color: var(--pink);                                     /* Pink arrow. */
+}
+
+/* ---------------------------------------------------------------------
+   10. PRODUCTS (CSS Grid)
+   --------------------------------------------------------------------- */
+.products {                                               /* Products section. */
+  background: linear-gradient(180deg, var(--black) 0%, var(--black-2) 50%, var(--black) 100%); /* Subtle band of lighter black. */
+}
+
+.filters {                                                /* Filter button row. */
+  display: flex;                                          /* FLEXBOX row. */
+  justify-content: center;                                /* Centred. */
+  flex-wrap: wrap;                                        /* Wraps on phones. */
+  gap: 10px;                                              /* Spacing. */
+  margin-bottom: 48px;                                    /* Space before grid. */
+}
+
+.filter-btn {                                             /* Each filter button. */
+  padding: 10px 22px;                                     /* Size. */
+  border-radius: 999px;                                   /* Pill. */
+  border: 1px solid var(--border);                        /* Outline. */
+  color: var(--muted);                                    /* Grey text. */
+  font-size: 0.9rem;                                      /* Size. */
+  font-weight: 500;                                       /* Medium. */
+  transition: all 0.3s var(--ease);                       /* Animate every change. */
+}
+
+.filter-btn:hover {                                       /* Hover. */
+  color: var(--white);                                    /* White text. */
+  border-color: rgba(255, 45, 135, 0.5);                  /* Pink edge. */
+}
+
+.filter-btn.active {                                      /* Selected filter (class added by JS). */
+  background: var(--gradient);                            /* Pink fill. */
+  color: var(--white);                                    /* White text. */
+  border-color: transparent;                              /* Hide outline. */
+}
+
+.product-grid {                                           /* CSS GRID for products. */
+  display: grid;                                          /* Grid. */
+  grid-template-columns: repeat(4, 1fr);                  /* Four COLUMNS on desktop. */
+  grid-auto-rows: auto;                                   /* ROWS size to their content. */
+  gap: 28px 24px;                                         /* GAP: 28px between rows, 24px between columns. */
+}
+
+.product-card {                                           /* Each product card. */
+  position: relative;                                     /* Anchor for the spotlight. */
+  display: flex;                                          /* FLEXBOX column: image on top, body below. */
+  flex-direction: column;                                 /* Stack vertically. */
+  border-radius: var(--radius);                           /* Rounded. */
+  background: var(--black-2);                             /* Card colour. */
+  border: 1px solid var(--border);                        /* Edge. */
+  overflow: hidden;                                       /* Clip image corners. */
+  transition: transform 0.5s var(--ease), border-color 0.4s, box-shadow 0.5s var(--ease); /* Smooth hover. */
+  --mx: 50%;                                              /* Mouse X position (set by JS) for the spotlight. */
+  --my: 50%;                                              /* Mouse Y position (set by JS). */
+}
+
+.product-card::before {                                   /* Pink spotlight following the mouse inside the card. */
+  content: "";                                            /* Required. */
+  position: absolute;                                     /* Covers the card. */
+  inset: 0;                                               /* Fill. */
+  background: radial-gradient(400px circle at var(--mx) var(--my), rgba(255, 45, 135, 0.15), transparent 45%); /* Glow centred on the cursor. */
+  opacity: 0;                                             /* Hidden by default. */
+  transition: opacity 0.4s;                               /* Fade. */
+  pointer-events: none;                                   /* Doesn't block the button. */
+  z-index: 2;                                             /* Above the image. */
+}
+
+.product-card:hover::before {                             /* On hover... */
+  opacity: 1;                                             /* ...show the spotlight. */
+}
+
+.product-card:hover {                                     /* Card hover. */
+  transform: translateY(-10px);                           /* Lift. */
+  border-color: rgba(255, 45, 135, 0.35);                 /* Pink edge. */
+  box-shadow: var(--shadow);                              /* Pink glow. */
+}
+
+.product-card.hide {                                      /* Class added by JS when filtered out. */
+  display: none;                                          /* Removes it from the grid. */
+}
+
+.product-card__media {                                    /* Image area. */
+  position: relative;                                     /* Anchor for the tag. */
+  aspect-ratio: 1 / 1;                                    /* Square. */
+  overflow: hidden;                                       /* Clips zoom. */
+}
+
+.product-card__media img {                                /* Product image. */
+  width: 100%;                                            /* Fill. */
+  height: 100%;                                           /* Fill. */
+  object-fit: cover;                                      /* Crop. */
+  transition: transform 0.9s var(--ease);                 /* Smooth zoom. */
+}
+
+.product-card:hover .product-card__media img {            /* Hovering the card zooms its image. */
+  transform: scale(1.08);                                 /* 8% zoom. */
+}
+
+.product-card__tag {                                      /* "Bestseller"/"New" tag. */
+  position: absolute;                                     /* On the image. */
+  top: 14px;                                              /* From top. */
+  left: 14px;                                             /* From left. */
+  padding: 6px 12px;                                      /* Size. */
+  border-radius: 999px;                                   /* Pill. */
+  font-size: 0.72rem;                                     /* Small. */
+  font-weight: 600;                                       /* Semi-bold. */
+  letter-spacing: 0.08em;                                 /* Spaced. */
+  text-transform: uppercase;                              /* Capitals. */
+  background: rgba(8, 8, 10, 0.6);                        /* Dark glass. */
+  backdrop-filter: blur(8px);                             /* Frost. */
+  -webkit-backdrop-filter: blur(8px);                     /* Safari. */
+  color: var(--pink-3);                                   /* Pale pink. */
+  border: 1px solid rgba(255, 45, 135, 0.3);              /* Pink edge. */
+}
+
+.product-card__body {                                     /* Text area. */
+  padding: 22px;                                          /* Inner space. */
+  display: flex;                                          /* FLEXBOX column. */
+  flex-direction: column;                                 /* Stack. */
+  flex: 1;                                                /* Grows to fill so all cards in a row match height. */
+}
+
+.product-card__cat {                                      /* Category label. */
+  font-size: 0.75rem;                                     /* Small. */
+  text-transform: uppercase;                              /* Capitals. */
+  letter-spacing: 0.15em;                                 /* Spaced. */
+  color: var(--pink-2);                                   /* Pink. */
+  margin-bottom: 6px;                                     /* Spacing. */
+}
+
+.product-card__name {                                     /* Product name. */
+  font-size: 1.15rem;                                     /* Size. */
+  margin-bottom: 10px;                                    /* Spacing. */
+}
+
+.product-card__desc {                                     /* Description. */
+  font-size: 0.9rem;                                      /* Size. */
+  color: var(--muted);                                    /* Grey. */
+  margin-bottom: 20px;                                    /* Spacing. */
+  flex: 1;                                                /* Pushes the price row to the bottom. */
+}
+
+.product-card__foot {                                     /* Price + button row. */
+  display: flex;                                          /* FLEXBOX row. */
+  align-items: center;                                    /* Vertical centre. */
+  justify-content: space-between;                         /* Price left, button right. */
+  gap: 10px;                                              /* Minimum spacing. */
+  position: relative;                                     /* Above the spotlight layer... */
+  z-index: 3;                                             /* ...so the button stays clickable. */
+}
+
+.product-card__price {                                    /* Price. */
+  font-family: var(--font-display);                       /* Display font. */
+  font-size: 1.35rem;                                     /* Size. */
+  font-weight: 700;                                       /* Bold. */
+  color: var(--white);                                    /* White. */
+}
+
+.add-btn {                                                /* "Add to bag" button. */
+  padding: 10px 16px;                                     /* Size. */
+  border-radius: 999px;                                   /* Pill. */
+  font-size: 0.82rem;                                     /* Small. */
+  font-weight: 600;                                       /* Semi-bold. */
+  border: 1px solid rgba(255, 45, 135, 0.5);              /* Pink outline. */
+  color: var(--pink-3);                                   /* Pale pink. */
+  transition: all 0.3s var(--ease);                       /* Smooth. */
+}
+
+.add-btn:hover {                                          /* Hover. */
+  background: var(--pink);                                /* Solid pink. */
+  color: var(--white);                                    /* White text. */
+  border-color: var(--pink);                              /* Matching edge. */
+}
+
+.add-btn:active {                                         /* While pressed... */
+  transform: scale(0.94);                                 /* ...shrinks slightly (tactile feedback). */
+}
+
+.add-btn.added {                                          /* Temporary state set by JS after clicking. */
+  background: var(--white);                               /* White. */
+  color: var(--black);                                    /* Dark text. */
+  border-color: var(--white);                             /* White edge. */
+}
+
+/* ---------------------------------------------------------------------
+   11. SERVICES (CSS Flexbox demonstration)
+   --------------------------------------------------------------------- */
+.service-row {                                            /* FLEX CONTAINER. */
+  display: flex;                                          /* FLEXBOX. Delete it and cards stack vertically on all screens. */
+  flex-wrap: wrap;                                        /* Cards wrap onto new lines when there's no room. */
+  justify-content: center;                                /* Centres cards along the row (horizontal ALIGNMENT). */
+  align-items: stretch;                                   /* All cards in a row get equal height. */
+  gap: 24px;                                              /* SPACING between cards. */
+}
+
+.service-card {                                           /* FLEX ITEM. */
+  flex: 1 1 300px;                                        /* grow 1, shrink 1, base width 300px → cards share space equally and wrap below 300px. */
+  position: relative;                                     /* Anchor for the gradient border. */
+  padding: 40px 32px;                                     /* Inner space. */
+  border-radius: var(--radius);                           /* Rounded. */
+  background: var(--black-2);                             /* Card colour. */
+  border: 1px solid var(--border);                        /* Edge. */
+  overflow: hidden;                                       /* Clip the glow. */
+  transition: transform 0.5s var(--ease), border-color 0.4s; /* Smooth hover. */
+}
+
+.service-card::after {                                    /* Pink glow in the corner. */
+  content: "";                                            /* Required. */
+  position: absolute;                                     /* Positioned in the card. */
+  width: 200px;                                           /* Size. */
+  height: 200px;                                          /* ... */
+  top: -100px;                                            /* Half off the top. */
+  right: -100px;                                          /* Half off the right. */
+  background: radial-gradient(circle, rgba(255, 45, 135, 0.35), transparent 70%); /* Pink glow. */
+  transition: transform 0.6s var(--ease);                 /* For the grow effect. */
+}
+
+.service-card:hover {                                     /* Hover. */
+  transform: translateY(-8px);                            /* Lift. */
+  border-color: rgba(255, 45, 135, 0.35);                 /* Pink edge. */
+}
+
+.service-card:hover::after {                              /* On hover the glow... */
+  transform: scale(1.8);                                  /* ...expands. */
+}
+
+.service-card__num {                                      /* Big outlined number. */
+  display: block;                                         /* Own line. */
+  font-family: var(--font-display);                       /* Display font. */
+  font-size: 3rem;                                        /* Big. */
+  font-weight: 800;                                       /* Bold. */
+  color: transparent;                                     /* Hollow... */
+  -webkit-text-stroke: 1px var(--pink);                   /* ...with a pink outline. */
+  margin-bottom: 18px;                                    /* Spacing. */
+}
+
+.service-card h3 {                                        /* Service title. */
+  font-size: 1.35rem;                                     /* Size. */
+  margin-bottom: 12px;                                    /* Spacing. */
+}
+
+.service-card p {                                         /* Service text. */
+  color: var(--muted);                                    /* Grey. */
+}
+
+/* ---------------------------------------------------------------------
+   12. TESTIMONIALS (Grid)
+   --------------------------------------------------------------------- */
+.testimonial-grid {                                       /* CSS GRID. */
+  display: grid;                                          /* Grid. */
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Fits as many 280px+ COLUMNS as possible — responsive without media queries. */
+  gap: 24px;                                              /* GAP. */
+}
+
+.testimonial {                                            /* Each quote card. */
+  padding: 34px;                                          /* Inner space. */
+  border-radius: var(--radius);                           /* Rounded. */
+  display: flex;                                          /* FLEXBOX column. */
+  flex-direction: column;                                 /* Stack. */
+  justify-content: space-between;                         /* Quote at top, author at bottom. */
+  gap: 24px;                                              /* Spacing. */
+  transition: transform 0.5s var(--ease);                 /* Smooth hover. */
+}
+
+.testimonial:hover {                                      /* Hover. */
+  transform: translateY(-6px) rotate(-0.5deg);            /* Lift with a playful tilt. */
+}
+
+.testimonial p {                                          /* Quote text. */
+  font-size: 1.05rem;                                     /* Size. */
+  color: var(--text);                                     /* Light text. */
+}
+
+.testimonial p::before {                                  /* Decorative stars above the quote. */
+  content: "★★★★★";                                       /* Five stars. */
+  display: block;                                         /* Own line. */
+  color: var(--pink);                                     /* Pink. */
+  letter-spacing: 3px;                                    /* Spacing. */
+  margin-bottom: 14px;                                    /* Gap below. */
+  font-size: 0.9rem;                                      /* Size. */
+}
+
+.testimonial footer {                                     /* Author block. */
+  display: flex;                                          /* FLEXBOX column. */
+  flex-direction: column;                                 /* Stack name and role. */
+}
+
+.testimonial footer strong {                              /* Name. */
+  color: var(--white);                                    /* White. */
+}
+
+.testimonial footer span {                                /* Role. */
+  font-size: 0.82rem;                                     /* Small. */
+  color: var(--muted);                                    /* Grey. */
+}
+
+/* ---------------------------------------------------------------------
+   13. CTA / NEWSLETTER
+   --------------------------------------------------------------------- */
+.cta {                                                    /* CTA section. */
+  padding: 40px 0 120px;                                  /* Spacing. */
+}
+
+.cta__box {                                               /* Big pink box. */
+  position: relative;                                     /* Anchor for glow. */
+  overflow: hidden;                                       /* Clip glow. */
+  text-align: center;                                     /* Centre text. */
+  padding: 80px 32px;                                     /* Inner space. */
+  border-radius: 32px;                                    /* Rounded. */
+  background: linear-gradient(135deg, var(--pink-deep), var(--pink) 55%, var(--pink-2)); /* Pink gradient. */
+}
+
+.cta__glow {                                              /* Moving light inside the box. */
+  position: absolute;                                     /* Inside box. */
+  width: 600px;                                           /* Size. */
+  height: 600px;                                          /* ... */
+  top: -300px;                                            /* Partly above. */
+  left: -150px;                                           /* Partly left. */
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.25), transparent 60%); /* White glow. */
+  animation: float 10s ease-in-out infinite;              /* Ambient motion. */
+  pointer-events: none;                                   /* Doesn't block input. */
+}
+
+.cta__box h2 {                                            /* CTA heading. */
+  position: relative;                                     /* Above the glow. */
+  font-size: clamp(1.8rem, 4vw, 3rem);                    /* Responsive size. */
+  margin-bottom: 14px;                                    /* Spacing. */
+}
+
+.cta__box p {                                             /* CTA text. */
+  position: relative;                                     /* Above glow. */
+  color: rgba(255, 255, 255, 0.85);                       /* Slightly transparent white. */
+  max-width: 520px;                                       /* Readable width. */
+  margin: 0 auto 32px;                                    /* Centred + space below. */
+}
+
+.cta__form {                                              /* Email form. */
+  position: relative;                                     /* Above glow. */
+  display: flex;                                          /* FLEXBOX row: input + button. */
+  gap: 10px;                                              /* Spacing. */
+  max-width: 480px;                                       /* Width limit. */
+  margin: 0 auto;                                         /* Centred. */
+  padding: 6px;                                           /* Inner space. */
+  border-radius: 999px;                                   /* Pill. */
+  background: rgba(8, 8, 10, 0.35);                       /* Dark glass. */
+  border: 1px solid rgba(255, 255, 255, 0.2);             /* Edge. */
+}
+
+.cta__form input {                                        /* Email input. */
+  flex: 1;                                                /* Takes all remaining width. */
+  min-width: 0;                                           /* Allows shrinking on small screens (prevents overflow). */
+  background: transparent;                                /* No fill. */
+  border: none;                                           /* No border. */
+  outline: none;                                          /* No default outline (container shows state instead). */
+  padding: 0 18px;                                        /* Text inset. */
+  color: var(--white);                                    /* White text. */
+}
+
+.cta__form input::placeholder {                           /* Placeholder text. */
+  color: rgba(255, 255, 255, 0.6);                        /* Faded white. */
+}
+
+.cta__form.invalid {                                      /* Added by JS when the email is wrong. */
+  border-color: var(--white);                             /* Bright outline. */
+  animation: shake 0.4s;                                  /* Shake = "try again" feedback. */
+}
+
+/* ---------------------------------------------------------------------
+   14. CONTACT (Grid + form styling)
+   --------------------------------------------------------------------- */
+.contact__grid {                                          /* CSS GRID: info | form. */
+  display: grid;                                          /* Grid. */
+  grid-template-columns: 0.9fr 1.1fr;                     /* Two COLUMNS; form slightly wider. */
+  gap: 64px;                                              /* GAP. */
+  align-items: start;                                     /* Top aligned. */
+}
+
+.contact__info > p {                                      /* Direct child paragraphs. */
+  color: var(--muted);                                    /* Grey. */
+  margin-bottom: 16px;                                    /* Spacing. */
+}
+
+.sample-note {                                            /* "Sample details" note. */
+  font-size: 0.85rem;                                     /* Small. */
+  padding: 10px 14px;                                     /* Inner space. */
+  border-left: 3px solid var(--pink);                     /* Pink accent bar (BORDER). */
+  background: rgba(255, 45, 135, 0.06);                   /* Pink tint. */
+  border-radius: 0 8px 8px 0;                             /* Round only the right corners. */
+}
+
+.contact__list {                                          /* <address> container. */
+  font-style: normal;                                     /* <address> is italic by default; this resets it. */
+  display: grid;                                          /* Grid list. */
+  gap: 14px;                                              /* GAP between items. */
+  margin-top: 28px;                                       /* Spacing. */
+}
+
+.contact__item {                                          /* Each contact row. */
+  display: flex;                                          /* FLEXBOX: icon + text. */
+  align-items: center;                                    /* Vertical centre. */
+  gap: 16px;                                              /* Spacing. */
+  padding: 16px 20px;                                     /* Inner space. */
+  border-radius: 16px;                                    /* Rounded. */
+  transition: transform 0.4s var(--ease), border-color 0.3s; /* Smooth hover. */
+}
+
+a.contact__item:hover {                                   /* Only contact items that are links (element + class). */
+  transform: translateX(6px);                             /* Slide right. */
+  border-color: rgba(255, 45, 135, 0.4);                  /* Pink edge. */
+}
+
+.contact__icon {                                          /* Icon circle. */
+  flex-shrink: 0;                                         /* Never squashed by long text. */
+  width: 44px;                                            /* Size. */
+  height: 44px;                                           /* ... */
+  border-radius: 12px;                                    /* Rounded. */
+  display: grid;                                          /* Centre symbol. */
+  place-items: center;                                    /* ... */
+  background: var(--gradient);                            /* Pink. */
+  color: var(--white);                                    /* White symbol. */
+  font-size: 1.1rem;                                      /* Size. */
+}
+
+.contact__item span:last-child {                          /* Text part (last span inside the item). */
+  display: flex;                                          /* FLEXBOX column. */
+  flex-direction: column;                                 /* Label above value. */
+  color: var(--white);                                    /* White value. */
+  font-weight: 500;                                       /* Medium. */
+  word-break: break-word;                                 /* Long emails wrap instead of overflowing. */
+}
+
+.contact__item small {                                    /* Label ("Email (sample)"). */
+  font-size: 0.75rem;                                     /* Small. */
+  color: var(--muted);                                    /* Grey. */
+  font-weight: 400;                                       /* Normal. */
+}
+
+.contact-form {                                           /* The form card. */
+  padding: 40px;                                          /* Inner space. */
+  border-radius: 28px;                                    /* Rounded. */
+}
+
+.contact-form__title {                                    /* Form heading. */
+  font-size: 1.5rem;                                      /* Size. */
+  margin-bottom: 28px;                                    /* Spacing. */
+}
+
+.form-group {                                             /* Label + input + error wrapper. */
+  margin-bottom: 20px;                                    /* Space between fields. */
+}
+
+.form-group label {                                       /* Labels. */
+  display: block;                                         /* Own line above the input. */
+  font-size: 0.88rem;                                     /* Size. */
+  font-weight: 500;                                       /* Medium. */
+  margin-bottom: 8px;                                     /* Gap to input. */
+  color: var(--text);                                     /* Light. */
+}
+
+.form-group input,                                        /* Text inputs... */
+.form-group textarea {                                    /* ...and the textarea. */
+  width: 100%;                                            /* Full width. */
+  padding: 14px 18px;                                     /* Inner space. */
+  border-radius: var(--radius-sm);                        /* Rounded. */
+  border: 1px solid var(--border);                        /* Edge. */
+  background: rgba(255, 255, 255, 0.03);                  /* Faint fill. */
+  outline: none;                                          /* We style focus with border + shadow instead. */
+  transition: border-color 0.3s, box-shadow 0.3s, background 0.3s; /* Smooth state changes. */
+}
+
+.form-group textarea {                                    /* Textarea only. */
+  resize: vertical;                                       /* Users can resize height only (prevents breaking the layout sideways). */
+  min-height: 130px;                                      /* Minimum height. */
+}
+
+.form-group input::placeholder,                           /* Placeholder text in inputs... */
+.form-group textarea::placeholder {                       /* ...and textarea. */
+  color: #6b6672;                                         /* Dim grey. */
+}
+
+.form-group input:focus,                                  /* :focus pseudo-class = field being typed in. */
+.form-group textarea:focus {                              /* ... */
+  border-color: var(--pink);                              /* Pink edge. */
+  box-shadow: 0 0 0 4px rgba(255, 45, 135, 0.15);         /* Soft pink ring. */
+  background: rgba(255, 45, 135, 0.04);                   /* Pink tint. */
+}
+
+.form-group.error input,                                  /* Field with .error class (set by JS validation)... */
+.form-group.error textarea {                              /* ... */
+  border-color: #ff4d6d;                                  /* Red-pink edge. */
+  box-shadow: 0 0 0 4px rgba(255, 77, 109, 0.15);         /* Red ring. */
+}
+
+.form-group.success input,                                /* Field marked valid by JS... */
+.form-group.success textarea {                            /* ... */
+  border-color: #3ddc97;                                  /* Green edge = correct. */
+}
+
+.error-msg {                                              /* Error text under a field. */
+  display: block;                                         /* Own line. */
+  min-height: 18px;                                       /* Reserves space so the layout doesn't jump when errors appear. */
+  margin-top: 6px;                                        /* Gap. */
+  font-size: 0.8rem;                                      /* Small. */
+  color: #ff6b88;                                         /* Red-pink. */
+}
+
+.form-group__meta {                                       /* Error + counter row. */
+  display: flex;                                          /* FLEXBOX row. */
+  justify-content: space-between;                         /* Error left, counter right. */
+  gap: 10px;                                              /* Spacing. */
+}
+
+.char-count {                                             /* Character counter. */
+  margin-top: 6px;                                        /* Gap. */
+  font-size: 0.78rem;                                     /* Small. */
+  color: var(--muted);                                    /* Grey. */
+  white-space: nowrap;                                    /* One line. */
+}
+
+.char-count.warn {                                        /* Added by JS near the limit. */
+  color: var(--pink);                                     /* Pink warning. */
+}
+
+.form-feedback {                                          /* Result message after submit. */
+  margin-top: 18px;                                       /* Gap. */
+  font-size: 0.9rem;                                      /* Size. */
+  border-radius: var(--radius-sm);                        /* Rounded. */
+  display: none;                                          /* Hidden until JS shows it. */
+}
+
+.form-feedback.show {                                     /* Visible state. */
+  display: block;                                         /* Show. */
+  padding: 14px 16px;                                     /* Inner space. */
+  animation: fadeUp 0.5s var(--ease);                     /* Slides in. */
+}
+
+.form-feedback.success {                                  /* Success style. */
+  background: rgba(61, 220, 151, 0.1);                    /* Green tint. */
+  border: 1px solid rgba(61, 220, 151, 0.4);              /* Green edge. */
+  color: #9ff0c9;                                         /* Light green text. */
+}
+
+.form-feedback.fail {                                     /* Error style. */
+  background: rgba(255, 77, 109, 0.1);                    /* Red tint. */
+  border: 1px solid rgba(255, 77, 109, 0.4);              /* Red edge. */
+  color: #ffb3c1;                                         /* Light red text. */
+}
+
+.form-disclaimer {                                        /* Honest "demo only" note. */
+  margin-top: 14px;                                       /* Gap. */
+  font-size: 0.75rem;                                     /* Small. */
+  color: var(--muted);                                    /* Grey. */
+  text-align: center;                                     /* Centred. */
+}
+
+/* ---------------------------------------------------------------------
+   15. FOOTER (Grid)
+   --------------------------------------------------------------------- */
+.footer {                                                 /* Footer area. */
+  border-top: 1px solid var(--border);                    /* Divider. */
+  padding: 80px 0 30px;                                   /* Spacing. */
+  background: var(--black-2);                             /* Slightly lighter. */
+}
+
+.footer__grid {                                           /* CSS GRID of footer columns. */
+  display: grid;                                          /* Grid. */
+  grid-template-columns: 2fr 1fr 1fr 1fr;                 /* Brand column twice as wide as the others. */
+  gap: 40px;                                              /* GAP. */
+}
+
+.footer__brand p {                                        /* Brand blurb. */
+  color: var(--muted);                                    /* Grey. */
+  margin-top: 16px;                                       /* Gap. */
+  max-width: 300px;                                       /* Narrow. */
+}
+
+.footer h4 {                                              /* Column titles. */
+  font-size: 0.95rem;                                     /* Size. */
+  margin-bottom: 18px;                                    /* Gap. */
+}
+
+.footer ul li {                                           /* Each list item. */
+  margin-bottom: 10px;                                    /* Spacing. */
+}
+
+.footer ul a {                                            /* Footer links. */
+  color: var(--muted);                                    /* Grey. */
+  font-size: 0.92rem;                                     /* Size. */
+  transition: color 0.3s, padding-left 0.3s;              /* Smooth hover. */
+}
+
+.footer ul a:hover {                                      /* Hover. */
+  color: var(--pink-2);                                   /* Pink. */
+  padding-left: 4px;                                      /* Nudges right. */
+}
+
+.footer__bottom {                                         /* Copyright row. */
+  display: flex;                                          /* FLEXBOX row. */
+  justify-content: space-between;                         /* Text at both ends. */
+  flex-wrap: wrap;                                        /* Wraps on phones. */
+  gap: 10px;                                              /* Spacing. */
+  margin-top: 60px;                                       /* Gap above. */
+  padding-top: 24px;                                      /* Gap below line. */
+  border-top: 1px solid var(--border);                    /* Divider. */
+  font-size: 0.85rem;                                     /* Small. */
+  color: var(--muted);                                    /* Grey. */
+}
+
+/* ---------------------------------------------------------------------
+   16. BACK-TO-TOP + TOASTS
+   --------------------------------------------------------------------- */
+.back-to-top {                                            /* Floating button. */
+  position: fixed;                                        /* Stays on screen. */
+  right: 24px;                                            /* From right. */
+  bottom: 24px;                                           /* From bottom. */
+  width: 50px;                                            /* Size. */
+  height: 50px;                                           /* ... */
+  border-radius: 50%;                                     /* Circle. */
+  background: var(--gradient);                            /* Pink. */
+  color: var(--white);                                    /* White arrow. */
+  font-size: 1.2rem;                                      /* Arrow size. */
+  box-shadow: var(--shadow);                              /* Glow. */
+  z-index: 900;                                           /* Above content, below header. */
+  opacity: 0;                                             /* Hidden until scrolled. */
+  visibility: hidden;                                     /* Also not clickable while hidden. */
+  transform: translateY(20px);                            /* Starts lower. */
+  transition: all 0.4s var(--ease);                       /* Smooth appear. */
+}
+
+.back-to-top.show {                                       /* Added by JS after scrolling. */
+  opacity: 1;                                             /* Visible. */
+  visibility: visible;                                    /* Clickable. */
+  transform: translateY(0);                               /* Slides up into place. */
+}
+
+.back-to-top:hover {                                      /* Hover. */
+  transform: translateY(-4px);                            /* Lift. */
+}
+
+.toast-container {                                        /* Holds notifications. */
+  position: fixed;                                        /* On screen. */
+  left: 50%;                                              /* Horizontally centred... */
+  bottom: 24px;                                           /* ...near the bottom. */
+  transform: translateX(-50%);                            /* Pulls back by half its width to truly centre. */
+  display: flex;                                          /* FLEXBOX column of toasts. */
+  flex-direction: column;                                 /* Stack. */
+  align-items: center;                                    /* Centre them. */
+  gap: 10px;                                              /* Spacing. */
+  z-index: 1100;                                          /* Above everything. */
+  width: max-content;                                     /* Shrinks to the content... */
+  max-width: calc(100vw - 32px);                          /* ...but never wider than the screen. */
+  pointer-events: none;                                   /* Clicks pass through. */
+}
+
+.toast {                                                  /* A single notification. */
+  padding: 14px 22px;                                     /* Inner space. */
+  border-radius: 999px;                                   /* Pill. */
+  background: rgba(17, 17, 20, 0.85);                     /* Dark glass. */
+  backdrop-filter: blur(14px);                            /* Frost. */
+  -webkit-backdrop-filter: blur(14px);                    /* Safari. */
+  border: 1px solid rgba(255, 45, 135, 0.4);              /* Pink edge. */
+  color: var(--white);                                    /* White text. */
+  font-size: 0.9rem;                                      /* Size. */
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);       /* Depth. */
+  animation: toastIn 0.5s var(--ease);                    /* Pops in. */
+}
+
+.toast.out {                                              /* Added by JS before removal. */
+  animation: toastOut 0.4s var(--ease) forwards;          /* Fades out and stays faded ("forwards"). */
+}
+
+/* ---------------------------------------------------------------------
+   17. SCROLL REVEAL ANIMATIONS (JS adds .visible)
+   --------------------------------------------------------------------- */
+.reveal {                                                 /* Elements waiting to be revealed. */
+  opacity: 0;                                             /* Invisible at first. */
+  transform: translateY(40px);                            /* Sitting 40px lower. */
+  transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); /* Smooth rise-in. */
+  transition-delay: var(--delay, 0s);                     /* STAGGER: JS gives each item a different --delay. */
+}
+
+.reveal.visible {                                         /* Once on screen (class added by JavaScript)... */
+  opacity: 1;                                             /* ...fade in... */
+  transform: translateY(0);                               /* ...and rise to normal position. */
+}
+
+.no-js .reveal {                                          /* Safety net if JS fails... */
+  opacity: 1;                                             /* ...content still shows. */
+  transform: none;                                        /* ... */
+}
+
+/* ---------------------------------------------------------------------
+   18. KEYFRAMES (named animations)
+   --------------------------------------------------------------------- */
+@keyframes gradientShift {                                /* Moves the gradient back and forth. */
+  0%, 100% { background-position: 0% 50%; }               /* Start and end on the left. */
+  50% { background-position: 100% 50%; }                  /* Halfway: on the right. */
+}
+
+@keyframes float {                                        /* Gentle up-and-down floating. */
+  0%, 100% { transform: translate(0, 0); }                /* Rest position. */
+  50% { transform: translate(20px, -24px); }              /* Drifts up-right. */
+}
+
+@keyframes pulse {                                        /* Expanding ring around the dot. */
+  0% { box-shadow: 0 0 0 0 rgba(255, 45, 135, 0.7); }     /* Ring starts tight and visible. */
+  70% { box-shadow: 0 0 0 12px rgba(255, 45, 135, 0); }   /* Grows and fades. */
+  100% { box-shadow: 0 0 0 0 rgba(255, 45, 135, 0); }     /* Resets. */
+}
+
+@keyframes underline {                                    /* Draws the title underline. */
+  from { transform: scaleX(0); }                          /* Zero width. */
+  to { transform: scaleX(1); }                            /* Full width. */
+}
+
+@keyframes marquee {                                      /* Infinite scroll. */
+  from { transform: translateX(0); }                      /* Start. */
+  to { transform: translateX(-50%); }                     /* Moves by half (the content is duplicated, so it loops seamlessly). */
+}
+
+@keyframes bump {                                         /* Bag bounce. */
+  0%, 100% { transform: scale(1); }                       /* Normal. */
+  40% { transform: scale(1.25); }                         /* Grows. */
+  70% { transform: scale(0.92); }                         /* Squashes. */
+}
+
+@keyframes shake {                                        /* Error shake. */
+  0%, 100% { transform: translateX(0); }                  /* Centre. */
+  25% { transform: translateX(-8px); }                    /* Left. */
+  75% { transform: translateX(8px); }                     /* Right. */
+}
+
+@keyframes fadeUp {                                       /* Fade + rise. */
+  from { opacity: 0; transform: translateY(10px); }       /* Hidden lower. */
+  to { opacity: 1; transform: translateY(0); }            /* Visible. */
+}
+
+@keyframes toastIn {                                      /* Toast entrance. */
+  from { opacity: 0; transform: translateY(20px) scale(0.95); } /* Hidden, lower, smaller. */
+  to { opacity: 1; transform: translateY(0) scale(1); }   /* Normal. */
+}
+
+@keyframes toastOut {                                     /* Toast exit. */
+  to { opacity: 0; transform: translateY(10px) scale(0.95); } /* Fades and drops. */
+}
+
+/* ---------------------------------------------------------------------
+   19. RESPONSIVE DESIGN — MEDIA QUERIES
+   Media queries apply styles only when the screen matches a condition.
+   Delete them and the desktop layout gets squashed on phones/tablets.
+   --------------------------------------------------------------------- */
+
+/* ---- Small desktops / large tablets (≤ 1100px) ---- */
+@media (max-width: 1100px) {                              /* Applies when the screen is 1100px wide or less. */
+  .product-grid {                                         /* Products... */
+    grid-template-columns: repeat(2, 1fr);                /* ...drop to 2 columns. */
+  }
+  .float-card--top {                                      /* Top floating card... */
+    left: -16px;                                          /* ...pulled in so it doesn't overflow. */
+  }
+  .float-card--bottom {                                   /* Bottom card... */
+    right: -12px;                                         /* ...pulled in. */
+  }
+}
+
+/* ---- Tablets (≤ 900px) ---- */
+@media (max-width: 900px) {                               /* Tablet screens. */
+  .section {                                              /* Sections... */
+    padding: 90px 0;                                      /* ...use less vertical space. */
+  }
+  .menu-toggle {                                          /* Hamburger... */
+    display: flex;                                        /* ...becomes visible. */
+  }
+  .nav__links {                                           /* The link list becomes a dropdown panel. */
+    position: fixed;                                      /* Fixed below the header. */
+    top: calc(var(--header-h) + 8px);                     /* Just under the header. */
+    left: 16px;                                           /* Inset from edges... */
+    right: 16px;                                          /* ... */
+    flex-direction: column;                               /* Links stacked vertically. */
+    align-items: stretch;                                 /* Each link full width. */
+    padding: 14px;                                        /* Inner space. */
+    border-radius: 24px;                                  /* Rounded panel. */
+    background: rgba(17, 17, 20, 0.95);                   /* Solid-ish dark. */
+    backdrop-filter: blur(20px);                          /* Frost. */
+    -webkit-backdrop-filter: blur(20px);                  /* Safari. */
+    opacity: 0;                                           /* Hidden... */
+    visibility: hidden;                                   /* ...and unclickable... */
+    transform: translateY(-12px) scale(0.98);             /* ...slightly raised. */
+    transition: all 0.4s var(--ease);                     /* Smooth open/close. */
+  }
+  .nav__links.open {                                      /* When JS adds .open... */
+    opacity: 1;                                           /* ...visible... */
+    visibility: visible;                                  /* ...clickable... */
+    transform: translateY(0) scale(1);                    /* ...drops into place. */
+  }
+  .nav__link {                                            /* Mobile links... */
+    padding: 14px 18px;                                   /* ...bigger tap targets. */
+    font-size: 1rem;                                      /* Larger text. */
+  }
+  .hero__grid,                                            /* Hero grid... */
+  .about__grid,                                           /* ...about grid... */
+  .contact__grid {                                        /* ...and contact grid... */
+    grid-template-columns: 1fr;                           /* ...all become a single column (stacked). */
+    gap: 56px;                                            /* Smaller gap. */
+  }
+  .hero {                                                 /* Hero... */
+    min-height: auto;                                     /* ...no longer forced to full height. */
+  }
+  .hero__visual {                                         /* Hero image... */
+    max-width: 480px;                                     /* ...limited width... */
+    margin: 0 auto;                                       /* ...and centred. */
+    width: 100%;                                          /* Fills up to max. */
+  }
+  .about__media {                                         /* About image... */
+    position: relative;                                   /* ...no longer sticky on small screens. */
+    top: 0;                                               /* Reset. */
+  }
+  .values {                                               /* Values grid... */
+    grid-template-columns: 1fr;                           /* ...one column. */
+    margin-top: 70px;                                     /* Less space. */
+  }
+  .footer__grid {                                         /* Footer... */
+    grid-template-columns: 1fr 1fr;                       /* ...two columns. */
+  }
+  .footer__brand {                                        /* Brand block... */
+    grid-column: 1 / -1;                                  /* ...spans all columns (line 1 to the last line). */
+  }
+}
+
+/* ---- Mobile phones (≤ 600px) ---- */
+@media (max-width: 600px) {                               /* Phone screens. */
+  .container {                                            /* Container... */
+    padding: 0 18px;                                      /* ...slightly less side padding. */
+  }
+  .section {                                              /* Sections... */
+    padding: 72px 0;                                      /* ...tighter spacing. */
+  }
+  .product-grid {                                         /* Products... */
+    grid-template-columns: 1fr;                           /* ...one per row. */
+  }
+  .hero__cta .btn {                                       /* Hero buttons... */
+    flex: 1 1 100%;                                       /* ...full width, stacked. */
+  }
+  .hero__stats {                                          /* Stats... */
+    gap: 24px;                                            /* ...closer together. */
+  }
+  .hero__stats strong {                                   /* Stat numbers... */
+    font-size: 1.8rem;                                    /* ...smaller. */
+  }
+  .float-card {                                           /* Floating cards... */
+    padding: 12px 14px;                                   /* ...more compact. */
+  }
+  .float-card--top {                                      /* Keep inside the screen. */
+    left: 8px;                                            /* ... */
+  }
+  .float-card--bottom {                                   /* ... */
+    right: 8px;                                           /* ... */
+  }
+  .cta__box {                                             /* CTA box... */
+    padding: 56px 20px;                                   /* ...less padding. */
+  }
+  .cta__form {                                            /* Newsletter form... */
+    flex-direction: column;                               /* ...input above button. */
+    border-radius: 24px;                                  /* Rounded rectangle instead of pill. */
+  }
+  .cta__form input {                                      /* Input... */
+    padding: 14px 16px;                                   /* ...taller. */
+  }
+  .contact-form {                                         /* Contact form... */
+    padding: 28px 20px;                                   /* ...less padding. */
+  }
+  .footer__grid {                                         /* Footer... */
+    grid-template-columns: 1fr;                           /* ...single column. */
+  }
+  .cursor-glow {                                          /* Mouse glow... */
+    display: none;                                        /* ...not needed on touch screens. */
+  }
+}
+
+/* ---- Accessibility: users who prefer less motion ---- */
+@media (prefers-reduced-motion: reduce) {                 /* Respects the operating-system "reduce motion" setting. */
+  *,                                                      /* Every element... */
+  *::before,                                              /* ... */
+  *::after {                                              /* ... */
+    animation-duration: 0.01ms !important;                /* ...animations finish instantly. */
+    animation-iteration-count: 1 !important;              /* ...and run only once. */
+    transition-duration: 0.01ms !important;               /* ...transitions are instant. */
+    scroll-behavior: auto !important;                     /* No smooth scrolling. */
+  }
+  .reveal {                                               /* Reveal elements... */
+    opacity: 1;                                           /* ...are shown immediately. */
+    transform: none;                                      /* ... */
+  }
+}
