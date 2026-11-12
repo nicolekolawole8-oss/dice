@@ -1,0 +1,515 @@
+/* ===== 1. VARIABLES: edit a colour here and it changes everywhere ===== */
+:root { /* :root = whole page; variables set here are usable anywhere */
+  --bg: #09070a; /* main near-black background */
+  --surface: #130e12; /* slightly lighter black for the footer */
+  --line: rgba(255, 255, 255, 0.12); /* thin divider lines */
+  --pink: #ff3d8b; /* main pink accent (used sparingly) */
+  --pink-soft: #ffb6d3; /* light pink for small labels */
+  --pink-deep: #c4175e; /* darker pink for button hover */
+  --text: #f4eef1; /* main text colour */
+  --muted: #a79aa1; /* secondary text colour */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1); /* smooth easing used by animations */
+  --serif: "Instrument Serif", Georgia, serif; /* display font with a safe fallback */
+  --sans: "Inter", "Segoe UI", Arial, sans-serif; /* body font with fallbacks */
+} /* end variables */
+
+/* ===== 2. RESET AND BASE ===== */
+* { /* every element */
+  margin: 0; /* removes default outer spacing */
+  padding: 0; /* removes default inner spacing */
+  box-sizing: border-box; /* padding/border stay inside the set width; deleting it can cause horizontal overflow */
+} /* end reset */
+html { /* root element */
+  scroll-behavior: smooth; /* nav links glide to sections */
+  scroll-padding-top: 70px; /* stops the fixed header covering section titles */
+} /* end html */
+body { /* whole page */
+  font-family: var(--sans); /* body font */
+  background: var(--bg); /* dark background */
+  color: var(--text); /* default text colour */
+  line-height: 1.7; /* comfortable line spacing */
+  -webkit-font-smoothing: antialiased; /* crisper text on Mac/iOS */
+  overflow-x: hidden; /* prevents sideways scrolling */
+} /* end body */
+img { /* all images */
+  display: block; /* removes the small gap under images */
+  max-width: 100%; /* never wider than the container (responsive) */
+} /* end img */
+a { /* all links */
+  color: inherit; /* use surrounding text colour */
+  text-decoration: none; /* remove underline */
+} /* end a */
+ul { /* all lists */
+  list-style: none; /* remove bullets */
+} /* end ul */
+.container { /* centred wrapper */
+  width: min(1180px, 90%); /* 90% wide on small screens, max 1180px */
+  margin-inline: auto; /* centre horizontally */
+} /* end container */
+.section { /* spacing for each section */
+  padding: 120px 0; /* large whitespace above and below */
+} /* end section */
+
+/* ===== 3. TYPOGRAPHY ===== */
+h1, h2, h3 { /* all headings */
+  font-family: var(--serif); /* elegant serif display font */
+  font-weight: 400; /* serif looks best at normal weight */
+  line-height: 1.08; /* tight heading lines */
+} /* end headings */
+h1 { /* main heading */
+  font-size: clamp(2.8rem, 7vw, 5.6rem); /* fluid size: min, preferred, max */
+} /* end h1 */
+h2 { /* section titles */
+  font-size: clamp(2.2rem, 4.5vw, 3.6rem); /* fluid size */
+  margin-bottom: 24px; /* space below */
+} /* end h2 */
+h3 { /* small titles */
+  font-size: 1.8rem; /* fixed size */
+  margin-bottom: 10px; /* space below */
+} /* end h3 */
+em { /* emphasised text */
+  color: var(--pink); /* pink italic accent */
+} /* end em */
+p { /* paragraphs */
+  color: var(--muted); /* softer than headings */
+} /* end p */
+strong { /* bold text */
+  color: var(--text); /* brighter than paragraph text */
+  font-weight: 500; /* medium weight */
+} /* end strong */
+.eyebrow { /* small label above headings */
+  font-size: 0.75rem; /* small */
+  letter-spacing: 0.22em; /* wide spacing */
+  text-transform: uppercase; /* capitals */
+  color: var(--pink); /* pink */
+  margin-bottom: 18px; /* space below */
+} /* end eyebrow */
+.num { /* small numbers 01, 02 */
+  display: block; /* own line */
+  font-size: 0.8rem; /* small */
+  letter-spacing: 0.15em; /* spacing */
+  color: var(--pink); /* pink */
+  margin-bottom: 14px; /* space below */
+} /* end num */
+
+/* ===== 4. BUTTONS ===== */
+.btn { /* shared button style */
+  display: inline-block; /* allows padding on links */
+  padding: 15px 34px; /* inner space */
+  border: 1px solid transparent; /* invisible border keeps sizes equal */
+  font: 500 0.85rem var(--sans); /* font shorthand: weight, size, family */
+  letter-spacing: 0.1em; /* spacing */
+  text-transform: uppercase; /* capitals */
+  cursor: pointer; /* hand cursor */
+  transition: background 0.3s, color 0.3s, transform 0.3s var(--ease); /* smooth hover */
+} /* end btn */
+.btn-primary { /* filled pink button */
+  background: var(--pink); /* pink fill */
+  color: #fff; /* white text */
+} /* end btn-primary */
+.btn-primary:hover { /* mouse over */
+  background: var(--pink-deep); /* darker pink */
+  transform: translateY(-2px); /* small lift */
+} /* end hover */
+.btn-primary:active { /* while pressed */
+  transform: scale(0.97); /* press-down microinteraction */
+} /* end active */
+.btn-outline { /* outline button */
+  border-color: rgba(255, 255, 255, 0.5); /* white outline */
+  color: #fff; /* white text */
+} /* end btn-outline */
+.btn-outline:hover { /* mouse over */
+  background: #fff; /* fills white */
+  color: var(--bg); /* text turns black */
+} /* end hover */
+.btn.added { /* class added by JS after clicking add to bag */
+  background: #fff; /* white */
+  color: var(--bg); /* black text */
+} /* end added */
+
+/* ===== 5. HEADER AND NAV (FLEXBOX) ===== */
+.site-header { /* top bar */
+  position: fixed; /* stays on screen while scrolling */
+  top: 0; /* top edge */
+  left: 0; /* left edge */
+  width: 100%; /* full width */
+  z-index: 100; /* above other content */
+  transition: background 0.4s, backdrop-filter 0.4s; /* smooth change on scroll */
+} /* end site-header */
+.site-header.scrolled { /* added by JS after scrolling */
+  background: rgba(9, 7, 10, 0.72); /* translucent black */
+  backdrop-filter: blur(14px); /* blur behind = glass effect */
+  border-bottom: 1px solid var(--line); /* thin line */
+} /* end scrolled */
+.nav { /* nav row */
+  display: flex; /* FLEXBOX row */
+  align-items: center; /* vertical centring */
+  justify-content: space-between; /* logo left, bag right */
+  height: 72px; /* bar height */
+} /* end nav */
+.logo { /* DICE wordmark */
+  font-weight: 600; /* semi-bold */
+  letter-spacing: 0.35em; /* wide spacing */
+  font-size: 1.1rem; /* size */
+} /* end logo */
+.nav-links { /* link list */
+  display: flex; /* horizontal row */
+  gap: 40px; /* space between links */
+} /* end nav-links */
+.nav-links a { /* each link */
+  position: relative; /* for the underline */
+  font-size: 0.85rem; /* size */
+  letter-spacing: 0.08em; /* spacing */
+  color: rgba(255, 255, 255, 0.75); /* soft white */
+  transition: color 0.3s; /* smooth colour */
+} /* end nav-links a */
+.nav-links a::after { /* underline line */
+  content: ""; /* required for pseudo-element */
+  position: absolute; /* placed against the link */
+  left: 0; /* start left */
+  bottom: -4px; /* just under text */
+  width: 0; /* hidden at first */
+  height: 1px; /* thin line */
+  background: var(--pink); /* pink */
+  transition: width 0.35s var(--ease); /* grows smoothly */
+} /* end underline */
+.nav-links a:hover { /* mouse over */
+  color: #fff; /* brighter */
+} /* end hover */
+.nav-links a:hover::after { /* mouse over, underline */
+  width: 100%; /* full width */
+} /* end hover underline */
+.nav-right { /* right group */
+  display: flex; /* row */
+  align-items: center; /* vertical centring */
+  gap: 18px; /* space between */
+} /* end nav-right */
+.bag-btn { /* bag button */
+  background: none; /* transparent */
+  border: 1px solid var(--line); /* thin border */
+  color: var(--text); /* text colour */
+  padding: 8px 18px; /* inner space */
+  font: 500 0.8rem var(--sans); /* font */
+  letter-spacing: 0.08em; /* spacing */
+  cursor: pointer; /* hand cursor */
+  transition: border-color 0.3s; /* smooth border */
+} /* end bag-btn */
+.bag-btn:hover { /* mouse over */
+  border-color: var(--pink); /* pink border */
+} /* end hover */
+.bag-btn span { /* number */
+  display: inline-block; /* lets transform work */
+} /* end span */
+.bag-btn span.bump { /* added by JS when an item is added */
+  animation: bump 0.4s var(--ease); /* plays pop animation */
+} /* end bump */
+.menu-btn { /* hamburger button */
+  display: none; /* hidden on desktop */
+  width: 32px; /* width */
+  height: 24px; /* height */
+  background: none; /* transparent */
+  border: none; /* no border */
+  cursor: pointer; /* hand cursor */
+  position: relative; /* for the lines */
+} /* end menu-btn */
+.menu-btn span { /* the two lines */
+  position: absolute; /* placed freely */
+  left: 0; /* left edge */
+  width: 100%; /* full width */
+  height: 1.5px; /* thin line */
+  background: #fff; /* white */
+  transition: transform 0.35s var(--ease), top 0.35s var(--ease); /* animates to an X */
+} /* end lines */
+.menu-btn span:nth-child(1) { top: 8px; } /* first line position */
+.menu-btn span:nth-child(2) { top: 15px; } /* second line position */
+.menu-btn.open span:nth-child(1) { top: 11px; transform: rotate(45deg); } /* first line becomes half of an X */
+.menu-btn.open span:nth-child(2) { top: 11px; transform: rotate(-45deg); } /* second line becomes other half */
+
+/* ===== 6. HERO ===== */
+.hero { /* home section */
+  position: relative; /* lets image and overlay sit inside */
+  min-height: 100vh; /* at least full screen height */
+  display: flex; /* flexbox to centre content vertically */
+  align-items: center; /* vertical centring */
+  overflow: hidden; /* hides image parts that scale outside */
+} /* end hero */
+.hero-img { /* background photo */
+  position: absolute; /* fills the hero */
+  inset: 0; /* top/right/bottom/left all 0 */
+  width: 100%; /* full width */
+  height: 120%; /* taller than hero so parallax has room */
+  object-fit: cover; /* crops the photo to fill without stretching */
+  object-position: center 20%; /* focus point of the crop */
+  animation: slowzoom 18s ease-out forwards; /* gentle ambient zoom */
+  will-change: transform; /* performance hint for JS parallax */
+} /* end hero-img */
+.hero-overlay { /* dark gradient over the photo */
+  position: absolute; /* fills the hero */
+  inset: 0; /* all edges */
+  background: linear-gradient(90deg, rgba(9, 7, 10, 0.92) 0%, rgba(9, 7, 10, 0.55) 55%, rgba(9, 7, 10, 0.25) 100%), linear-gradient(0deg, var(--bg) 0%, transparent 25%); /* left-to-right fade plus bottom blend into the page */
+} /* end overlay */
+.hero-content { /* hero text */
+  position: relative; /* sits above image and overlay */
+  z-index: 2; /* stacking order */
+  padding-top: 90px; /* clears the header */
+} /* end hero-content */
+.lead { /* intro paragraph */
+  max-width: 480px; /* short readable lines */
+  margin: 26px 0 38px; /* space above and below */
+  font-size: 1.05rem; /* slightly larger */
+  color: rgba(255, 255, 255, 0.75); /* readable over photo */
+} /* end lead */
+.hero-actions { /* button row */
+  display: flex; /* row */
+  gap: 14px; /* space between */
+  flex-wrap: wrap; /* wrap on small screens */
+} /* end hero-actions */
+
+/* ===== 7. ABOUT (GRID) ===== */
+.about-grid { /* CSS GRID: image + text */
+  display: grid; /* turns on grid; deleting it stacks the items */
+  grid-template-columns: 1fr 1fr; /* two equal columns */
+  gap: 80px; /* space between columns */
+  align-items: center; /* vertical centring */
+} /* end about-grid */
+.about-img { /* about photo */
+  width: 100%; /* fill column */
+  aspect-ratio: 4 / 5; /* portrait shape */
+  object-fit: cover; /* crop without stretching */
+} /* end about-img */
+.about-text p { /* about paragraphs */
+  margin-bottom: 18px; /* space between paragraphs */
+  max-width: 480px; /* readable width */
+} /* end about-text p */
+.values { /* mission, vision, objectives */
+  display: grid; /* GRID */
+  grid-template-columns: repeat(3, 1fr); /* three equal columns */
+  gap: 40px; /* space between */
+  margin-top: 100px; /* space above */
+} /* end values */
+.value { /* each value block */
+  border-top: 1px solid var(--line); /* thin top line */
+  padding-top: 28px; /* space under line */
+  transition: border-color 0.4s; /* smooth hover */
+} /* end value */
+.value:hover { /* mouse over */
+  border-color: var(--pink); /* line turns pink */
+} /* end hover */
+.value li { /* objective list items */
+  color: var(--muted); /* soft text */
+  padding: 3px 0; /* vertical spacing */
+} /* end value li */
+
+/* ===== 8. PRODUCTS (FLEXBOX) ===== */
+.section-head { /* heading block */
+  margin-bottom: 70px; /* space below */
+} /* end section-head */
+.product-list { /* all products */
+  display: flex; /* FLEXBOX */
+  flex-direction: column; /* stack rows */
+  gap: 110px; /* space between rows */
+} /* end product-list */
+.product { /* one product row */
+  display: flex; /* image and text side by side */
+  align-items: center; /* vertical centring */
+  gap: 90px; /* space between */
+} /* end product */
+.product.reverse { /* alternate rows */
+  flex-direction: row-reverse; /* image goes right */
+} /* end reverse */
+.product-media { /* image wrapper */
+  flex: 0 0 min(520px, 48%); /* fixed share of the row */
+  overflow: hidden; /* hides zoom overflow */
+} /* end product-media */
+.product-media img { /* product photo */
+  width: 100%; /* fill wrapper */
+  aspect-ratio: 4 / 5; /* portrait shape */
+  object-fit: cover; /* crop without stretching */
+  transition: transform 1s var(--ease); /* smooth zoom */
+} /* end product img */
+.product-media img.crop-top { /* cap photo crop */
+  object-position: center 12%; /* focus on the cap area */
+} /* end crop-top */
+.product:hover .product-media img { /* hovering the row */
+  transform: scale(1.05); /* slow zoom */
+} /* end hover */
+.product-info { /* text column */
+  flex: 1; /* takes remaining space */
+} /* end product-info */
+.product-info p { /* description */
+  max-width: 380px; /* readable width */
+} /* end product-info p */
+.buy-row { /* price + button */
+  display: flex; /* row */
+  align-items: center; /* vertical centring */
+  gap: 28px; /* space between */
+  margin-top: 30px; /* space above */
+  flex-wrap: wrap; /* wrap on small screens */
+} /* end buy-row */
+.price { /* price */
+  font-size: 1.15rem; /* size */
+  font-weight: 500; /* medium */
+} /* end price */
+
+/* ===== 9. CONTACT (FLEXBOX) ===== */
+.contact-wrap { /* info + form */
+  display: flex; /* side by side */
+  gap: 100px; /* space between */
+  align-items: flex-start; /* align to top */
+} /* end contact-wrap */
+.contact-info { /* left column */
+  flex: 1 1 38%; /* about 38% */
+} /* end contact-info */
+.contact-info li { /* each detail */
+  padding: 16px 0; /* vertical spacing */
+  border-bottom: 1px solid var(--line); /* divider line */
+  color: var(--muted); /* soft text */
+} /* end li */
+.contact-info li span { /* label */
+  display: block; /* own line */
+  font-size: 0.7rem; /* small */
+  letter-spacing: 0.2em; /* spacing */
+  text-transform: uppercase; /* capitals */
+  color: var(--pink-soft); /* light pink */
+} /* end label */
+.contact-form { /* right column */
+  flex: 1 1 56%; /* about 56% */
+} /* end contact-form */
+.field { /* label + input group */
+  margin-bottom: 14px; /* space below */
+} /* end field */
+.field label { /* labels */
+  display: block; /* own line */
+  font-size: 0.7rem; /* small */
+  letter-spacing: 0.2em; /* spacing */
+  text-transform: uppercase; /* capitals */
+  color: var(--muted); /* soft text */
+} /* end label */
+.field input, .field textarea { /* inputs */
+  width: 100%; /* full width */
+  padding: 12px 0; /* vertical padding only */
+  background: transparent; /* no fill */
+  border: none; /* remove default border */
+  border-bottom: 1px solid var(--line); /* underline style */
+  color: var(--text); /* typed text colour */
+  font: inherit; /* use page font */
+  transition: border-color 0.3s; /* smooth focus */
+} /* end inputs */
+.field textarea { /* message box */
+  resize: vertical; /* only resize up/down */
+} /* end textarea */
+.field input:focus, .field textarea:focus { /* when clicked into */
+  outline: none; /* remove default outline */
+  border-bottom-color: var(--pink); /* pink underline */
+} /* end focus */
+.field.invalid input, .field.invalid textarea { /* JS marks wrong fields */
+  border-bottom-color: #ff6b8a; /* red-pink underline */
+} /* end invalid */
+.error { /* error text */
+  display: block; /* own line */
+  min-height: 20px; /* prevents layout jump */
+  color: #ff8aa3; /* soft red */
+  font-size: 0.78rem; /* small */
+} /* end error */
+.form-status { /* message after submit */
+  margin-top: 16px; /* space above */
+  font-size: 0.9rem; /* size */
+} /* end form-status */
+.form-status.success { /* success state */
+  color: #8dffbf; /* green */
+} /* end success */
+
+/* ===== 10. FOOTER AND TOAST ===== */
+.footer { /* footer */
+  background: var(--surface); /* lighter black */
+  border-top: 1px solid var(--line); /* top line */
+  padding: 40px 0; /* vertical space */
+} /* end footer */
+.footer-inner { /* footer row */
+  display: flex; /* row */
+  justify-content: space-between; /* left and right */
+  align-items: center; /* vertical centring */
+  gap: 20px; /* space between */
+  flex-wrap: wrap; /* wrap on small screens */
+} /* end footer-inner */
+.footer p { /* footer text */
+  font-size: 0.8rem; /* small */
+} /* end footer p */
+.footer p a { /* credit link */
+  color: var(--pink-soft); /* light pink */
+  text-decoration: underline; /* underline */
+} /* end link */
+.toast { /* popup */
+  position: fixed; /* fixed on screen */
+  bottom: 28px; /* from bottom */
+  left: 50%; /* horizontal centre */
+  transform: translate(-50%, 120px); /* centred and hidden below screen */
+  padding: 13px 26px; /* inner space */
+  background: rgba(19, 14, 18, 0.9); /* dark fill */
+  backdrop-filter: blur(10px); /* glass blur */
+  border: 1px solid var(--line); /* thin border */
+  font-size: 0.85rem; /* size */
+  transition: transform 0.5s var(--ease); /* slide animation */
+  z-index: 200; /* above everything */
+} /* end toast */
+.toast.show { /* added by JS */
+  transform: translate(-50%, 0); /* slides into view */
+} /* end show */
+
+/* ===== 11. SCROLL REVEAL (JS adds .visible) ===== */
+.reveal { /* starting state */
+  opacity: 0; /* invisible until JS adds .visible; without the JS file they stay hidden */
+  transform: translateY(30px); /* pushed down */
+  transition: opacity 1s var(--ease), transform 1s var(--ease); /* smooth fade and rise */
+} /* end reveal */
+.reveal.visible { /* after scrolling into view */
+  opacity: 1; /* visible */
+  transform: none; /* original position */
+} /* end visible */
+.reveal[data-delay="1"] { transition-delay: 0.12s; } /* stagger step 1 */
+.reveal[data-delay="2"] { transition-delay: 0.24s; } /* stagger step 2 */
+.reveal[data-delay="3"] { transition-delay: 0.36s; } /* stagger step 3 */
+
+/* ===== 12. KEYFRAMES ===== */
+@keyframes slowzoom { /* hero image zoom-out */
+  from { scale: 1.12; } /* starts zoomed in */
+  to { scale: 1; } /* settles to normal */
+} /* end slowzoom */
+@keyframes bump { /* bag number pop */
+  50% { transform: scale(1.5); } /* grows halfway */
+} /* end bump */
+
+/* ===== 13. RESPONSIVE (MEDIA QUERIES) ===== */
+@media (max-width: 960px) { /* tablets and below */
+  .section { padding: 90px 0; } /* less whitespace */
+  .about-grid { grid-template-columns: 1fr; gap: 40px; } /* about stacks in one column */
+  .values { grid-template-columns: 1fr; gap: 32px; margin-top: 70px; } /* values stack */
+  .product, .product.reverse { flex-direction: column; align-items: flex-start; gap: 28px; } /* products stack, image on top */
+  .product-media { flex-basis: auto; width: 100%; } /* image fills width */
+  .product-list { gap: 80px; } /* tighter spacing */
+  .contact-wrap { flex-direction: column; gap: 50px; } /* contact stacks */
+  .contact-info, .contact-form { width: 100%; flex-basis: auto; } /* full width */
+} /* end tablet query */
+@media (max-width: 720px) { /* phones */
+  .menu-btn { display: block; } /* show hamburger */
+  .nav-links { /* mobile dropdown */
+    position: absolute; /* below header */
+    top: 72px; /* under the bar */
+    left: 0; /* left edge */
+    width: 100%; /* full width */
+    flex-direction: column; /* stacked links */
+    gap: 0; /* no gap (padding used instead) */
+    background: rgba(9, 7, 10, 0.97); /* near-solid black */
+    max-height: 0; /* collapsed */
+    overflow: hidden; /* hides links when collapsed */
+    transition: max-height 0.5s var(--ease); /* smooth open */
+  } /* end nav-links */
+  .nav-links.open { max-height: 300px; } /* JS adds .open to expand */
+  .nav-links a { display: block; padding: 16px 5%; } /* large tap targets */
+  .hero-overlay { background: linear-gradient(0deg, var(--bg) 0%, rgba(9, 7, 10, 0.7) 60%, rgba(9, 7, 10, 0.5) 100%); } /* stronger overlay for text on small screens */
+  .hero-actions .btn { width: 100%; text-align: center; } /* full-width buttons */
+} /* end phone query */
+@media (prefers-reduced-motion: reduce) { /* users who disable animations */
+  * { animation: none !important; transition: none !important; } /* stop all motion */
+  .reveal { opacity: 1; transform: none; } /* show content immediately */
+} /* end reduced motion */

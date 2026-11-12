@@ -1,0 +1,115 @@
+<!DOCTYPE html> <!-- declares HTML5; without it browsers use old "quirks mode" -->
+<html lang="en"> <!-- root element; lang helps screen readers and search engines -->
+<head> <!-- invisible page information -->
+  <meta charset="UTF-8"> <!-- correct character display; removing may garble symbols like the naira sign -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- makes the layout fit phone screens; removing breaks mobile -->
+  <meta name="description" content="Dice: considered streetwear and accessories, made in Lagos."> <!-- shown in search results -->
+  <title>Dice | Streetwear &amp; Accessories</title> <!-- browser tab title -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"> <!-- speeds up loading Google Fonts -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <!-- same, for the font files -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet"> <!-- loads the two fonts; if offline the CSS fallback fonts are used -->
+  <link rel="stylesheet" href="css/style.css"> <!-- external stylesheet; removing it leaves the page unstyled -->
+</head>
+<body> <!-- all visible content -->
+
+  <header class="site-header" id="siteHeader"> <!-- semantic header; JS adds a class on scroll -->
+    <nav class="nav container" aria-label="Main"> <!-- semantic navigation block -->
+      <a href="#home" class="logo">DICE</a> <!-- brand wordmark linking to the top -->
+      <ul class="nav-links" id="navLinks"> <!-- list of section links -->
+        <li><a href="#home">Home</a></li> <!-- goes to the hero -->
+        <li><a href="#about">About</a></li> <!-- goes to about -->
+        <li><a href="#products">Products</a></li> <!-- goes to products -->
+        <li><a href="#contact">Contact</a></li> <!-- goes to contact -->
+      </ul>
+      <div class="nav-right"> <!-- groups bag and menu button -->
+        <button class="bag-btn" id="bagBtn" type="button">Bag (<span id="bagCount">0</span>)</button> <!-- bag button; JS updates the number -->
+        <button class="menu-btn" id="menuBtn" type="button" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span></button> <!-- mobile menu button; two lines drawn with CSS -->
+      </div>
+    </nav>
+  </header>
+
+  <main> <!-- main page content -->
+
+    <section class="hero" id="home"> <!-- HOME section -->
+      <img class="hero-img" src="https://images.unsplash.com/photo-1542529727-24cb357c57d2?auto=format&fit=crop&w=1800&q=80" alt="Model wearing a black cap and white tee against a grey wall" fetchpriority="high"> <!-- online hero photo (Unsplash) -->
+      <div class="hero-overlay"></div> <!-- dark gradient so text stays readable -->
+      <div class="container hero-content"> <!-- text over the photo -->
+        <p class="eyebrow reveal">Welcome to Dice</p> <!-- welcome message label -->
+        <h1 class="reveal" data-delay="1">Considered streetwear,<br><em>made in Lagos.</em></h1> <!-- business tagline -->
+        <p class="lead reveal" data-delay="2">Dice is a Lagos clothing label designing hoodies, tees and accessories in heavyweight fabrics and clean silhouettes. Built to be worn on repeat.</p> <!-- brief introduction -->
+        <div class="hero-actions reveal" data-delay="3"> <!-- buttons row -->
+          <a href="#products" class="btn btn-primary">Shop the collection</a> <!-- main call to action -->
+          <a href="#about" class="btn btn-outline">Our story</a> <!-- secondary action -->
+        </div>
+      </div>
+    </section>
+
+    <section class="section container" id="about"> <!-- ABOUT section -->
+      <div class="about-grid"> <!-- CSS GRID: image and text columns -->
+        <img class="about-img reveal" src="https://images.unsplash.com/photo-1604257936257-639c57c5bb4a?auto=format&fit=crop&w=1000&q=80" alt="Model in a striped hooded top" loading="lazy"> <!-- online image, loads when near screen -->
+        <div class="about-text"> <!-- text column -->
+          <p class="eyebrow reveal">About Dice</p>
+          <h2 class="reveal" data-delay="1">Clothing with a point of view</h2>
+          <p class="reveal" data-delay="2"><strong>What we do.</strong> Dice designs and sells everyday clothing and accessories for people who care about fit, fabric and finish.</p> <!-- what the organisation does -->
+          <p class="reveal" data-delay="3"><strong>Our story.</strong> Dice began in 2021 as a small print project. It grew into a full label by focusing on one idea: fewer pieces, made better. (Sample history for this project.)</p> <!-- background/history -->
+        </div>
+      </div>
+      <div class="values"> <!-- CSS GRID: mission, vision, objectives -->
+        <article class="value reveal"><span class="num">01</span><h3>Mission</h3><p>To make well-built, expressive clothing that people keep for years.</p></article> <!-- mission -->
+        <article class="value reveal" data-delay="1"><span class="num">02</span><h3>Vision</h3><p>To become a leading African streetwear label known for quality and design.</p></article> <!-- vision -->
+        <article class="value reveal" data-delay="2"><span class="num">03</span><h3>Objectives</h3><ul><li>Premium fabrics</li><li>Honest pricing</li><li>Reliable delivery</li></ul></article> <!-- objectives list -->
+      </div>
+    </section>
+
+    <section class="section container" id="products"> <!-- PRODUCTS section -->
+      <div class="section-head reveal"><p class="eyebrow">The Collection</p><h2>Essentials, refined</h2></div> <!-- heading -->
+      <div class="product-list"> <!-- FLEXBOX column of alternating rows -->
+        <article class="product reveal"> <!-- product 1 -->
+          <div class="product-media"><img src="https://images.unsplash.com/photo-1622131527801-78b144aa7f2c?auto=format&fit=crop&w=1000&q=80" alt="Model in a beige hoodie leaning on a wall" loading="lazy"></div> <!-- wrapper hides zoom overflow -->
+          <div class="product-info"><span class="num">01</span><h3>Sand Oversized Hoodie</h3><p>Heavyweight brushed cotton, relaxed drop shoulder and a soft, structured hood.</p><div class="buy-row"><span class="price">₦38,000</span><button class="btn btn-primary add-btn" type="button" data-name="Sand Oversized Hoodie">Add to bag</button></div></div>
+        </article>
+        <article class="product reverse reveal"> <!-- product 2; "reverse" swaps sides -->
+          <div class="product-media"><img src="https://images.unsplash.com/photo-1543849877-4097ae9f2b73?auto=format&fit=crop&w=1000&q=80" alt="Model in a black and blue zip-up hoodie" loading="lazy"></div>
+          <div class="product-info"><span class="num">02</span><h3>Noir Zip Hoodie</h3><p>A full-zip layer with a clean front and a tailored fit. Easy over a tee, sharp over a shirt.</p><div class="buy-row"><span class="price">₦42,500</span><button class="btn btn-primary add-btn" type="button" data-name="Noir Zip Hoodie">Add to bag</button></div></div>
+        </article>
+        <article class="product reveal"> <!-- product 3 -->
+          <div class="product-media"><img class="crop-top" src="https://images.unsplash.com/photo-1542529727-24cb357c57d2?auto=format&fit=crop&w=1000&q=80" alt="Black structured cap" loading="lazy"></div>
+          <div class="product-info"><span class="num">03</span><h3>Black Dad Cap</h3><p>Six-panel cotton cap with an adjustable strap. The simplest way to finish an outfit.</p><div class="buy-row"><span class="price">₦12,000</span><button class="btn btn-primary add-btn" type="button" data-name="Black Dad Cap">Add to bag</button></div></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section container" id="contact"> <!-- CONTACT section -->
+      <div class="contact-wrap"> <!-- FLEXBOX: info and form -->
+        <div class="contact-info"> <!-- left column -->
+          <p class="eyebrow reveal">Contact</p><h2 class="reveal" data-delay="1">Talk to us</h2>
+          <ul class="reveal" data-delay="2"> <!-- sample details -->
+            <li><span>Email</span><a href="mailto:hello@dicestore.example">hello@dicestore.example</a></li> <!-- sample email -->
+            <li><span>Phone</span><a href="tel:+2340000000000">+234 000 000 0000</a></li> <!-- sample phone -->
+            <li><span>Studio</span>12 Sample Street, Lagos, Nigeria</li> <!-- sample address -->
+            <li><span>Hours</span>Mon - Sat, 9am - 6pm</li> <!-- hours -->
+          </ul>
+        </div>
+        <form class="contact-form reveal" id="contactForm" novalidate> <!-- novalidate lets our JS show the errors -->
+          <div class="field"><label for="fullName">Full name</label><input type="text" id="fullName" name="fullName" autocomplete="name"><small class="error" id="fullNameError"></small></div> <!-- name -->
+          <div class="field"><label for="email">Email address</label><input type="email" id="email" name="email" autocomplete="email"><small class="error" id="emailError"></small></div> <!-- email -->
+          <div class="field"><label for="subject">Subject</label><input type="text" id="subject" name="subject"><small class="error" id="subjectError"></small></div> <!-- subject -->
+          <div class="field"><label for="message">Message</label><textarea id="message" name="message" rows="5"></textarea><small class="error" id="messageError"></small></div> <!-- message -->
+          <button type="submit" class="btn btn-primary">Send message</button> <!-- submit button -->
+          <p class="form-status" id="formStatus" role="status"></p> <!-- feedback area -->
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer"> <!-- site footer -->
+    <div class="container footer-inner"> <!-- footer row -->
+      <a href="#home" class="logo">DICE</a> <!-- wordmark -->
+      <p>&copy; 2026 Dice. Student project, sample details only. Photos from <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a>.</p> <!-- credit; rel=noopener is a security best practice -->
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status"></div> <!-- popup message box -->
+  <script src="js/script.js"></script> <!-- external JS at the end so the HTML exists first -->
+</body>
+</html>
