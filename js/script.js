@@ -260,7 +260,7 @@ addButtons.forEach(function (button) {                            // For every "
 
 bagBtn.addEventListener("click", function () {                    // Clicking the bag icon...
   const word = bagItems === 1 ? "item" : "items";                 // ...chooses singular or plural...
-  showToast("Your bag has " + bagItems + " " + word + " (demo store, no checkout)"); // ...and shows a summary toast.
+  showToast("Your bag has " + bagItems + " " + word ); // ...and shows a summary toast.
 });
 
 /* ---------------------------------------------------------------------
@@ -397,7 +397,7 @@ contactForm.addEventListener("submit", function (event) {         // When the fo
   console.table(formData);                                        // Prints the data as a neat table in the console so you can verify it.
   console.log("ℹ️ No backend is connected, so this message was NOT sent anywhere."); // Honest note: this is a demo only.
 
-  formFeedback.textContent = "✓ Form validated successfully. This is a demo: no backend is connected, so your message was not sent. Open the browser console (F12) to see the verification log."; // Clear, honest user feedback.
+  formFeedback.textContent = "✓ Form validated successfully.."; // Clear, honest user feedback.
   formFeedback.classList.add("show", "success");                  // Green feedback box.
   showToast("✓ Validation passed. Check the console");            // Small pop-up confirmation.
 
@@ -433,8 +433,8 @@ newsletterForm.addEventListener("submit", function (event) {      // On submit..
     return;                                                       // Stop.
   }
 
-  console.log("✅ Newsletter email validated (demo only, not sent):", value); // Console verification, no real subscription.
-  showToast("🎉 Email validated. Demo only, no subscription was made"); // Honest feedback.
+  console.log("✅ Newsletter email validated:", value); // Console verification, no real subscription.
+  showToast("🎉 Email validated."); // Honest feedback.
   newsletterForm.reset();                                         // Clear the field.
 });
 
